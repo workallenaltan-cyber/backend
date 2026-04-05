@@ -2,7 +2,7 @@ let token = localStorage.getItem("token");
 
 function login() {
   //fetch("/api/login", {//
-  fetch("http://localhost:3000/api/login", {
+  fetch("https://backend-z9ir.onrender.com/api/login", {
     method: "POST",
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify({
