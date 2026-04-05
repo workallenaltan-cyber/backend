@@ -1,5 +1,5 @@
 // 登录
-function login() {
+/*function login() {
   console.log("登录点击");
 
   const employeeId = document.getElementById("id").value;
@@ -55,8 +55,8 @@ function check() {
     });
 
   });
-
-/*function login() {
+}*/
+function login() {
   alert("我是新的JS文件");
   alert("按钮测试成功");
 
@@ -64,4 +64,4 @@ function check() {
   const password = document.getElementById("pw").value;
 
   console.log(employeeId, password);
-}*/
+}
