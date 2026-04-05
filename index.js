@@ -10,7 +10,9 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors()); // ⭐ 关键
+app.use(cors({
+  origin: "*"
+})); // ⭐ 关键
 app.use(express.json());
 
 const { Pool } = pkg;
