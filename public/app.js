@@ -83,8 +83,13 @@ function loadAll() {
         const tr = `
           <tr>
             <td>${row.employee_id}</td>
-            <td>${row.date}</td>
-            <td>${row.check_in_time || ""}</td>
+            <td> ${new Date(row.date).toLocaleDateString('en-GB')} </td>
+            <td>${new Date(row.check_in_time).toLocaleTimeString('en-GB', { 
+					hour: '2-digit', 
+					minute: '2-digit', 
+					hour12: false 
+				}) || ""}
+			</td>
             <td>${row.check_out_time || ""}</td>
             <td>${row.check_in_lat}, ${row.check_in_lng}</td>
             <td>${row.check_out_lat || ""}, ${row.check_out_lng || ""}</td>
