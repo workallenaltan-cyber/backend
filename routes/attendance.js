@@ -87,7 +87,7 @@ const ExcelJS = require("exceljs");
 router.get("/export", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM attendance ORDER BY date DESC"
+      "SELECT attendance.employee_id,users.employee_name,attendance.date,attendance.check_in_time,attendance.check_out_time,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng FROM attendance inner join users on attendance.employee_id=users.employee_id ORDER BY attendance.date DESC"
     );
 
     const workbook = new ExcelJS.Workbook();
@@ -96,6 +96,7 @@ router.get("/export", async (req, res) => {
     // 表头
     sheet.columns = [
       { header: "员工ID", key: "employee_id" },
+	  { header: "Name", key: "employee_name" },
       { header: "日期", key: "date" },
       { header: "上班时间", key: "check_in_time" },
       { header: "下班时间", key: "check_out_time" },
@@ -104,11 +105,41 @@ router.get("/export", async (req, res) => {
       { header: "下班纬度", key: "check_out_lat" },
       { header: "下班经度", key: "check_out_lng" }
     ];
+	
+	function formatDateTime(dateStr) {
+	  if (!dateStr) return "";
+
+	  const d = new Date(dateStr);
+
+	  // 时区修正（马来西亚 +8）
+	  d.setHours(d.getHours() + 8);
+
+	  const year = d.getFullYear();
+	  const month = String(d.getMonth() + 1).padStart(2, "0");
+	  const day = String(d.getDate()).padStart(2, "0");
+
+	  const hour = String(d.getHours()).padStart(2, "0");
+	  const min = String(d.getMinutes()).padStart(2, "0");
+	  const sec = String(d.getSeconds()).padStart(2, "0");
+
+	  return `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+	}
 
     // 数据
     result.rows.forEach(row => {
-      sheet.addRow(row);
-    });
+	  sheet.addRow({
+		employee_id: row.employee_id,
+		date: row.date,
+
+		check_in_time: formatDateTime(row.check_in_time),
+		check_out_time: formatDateTime(row.check_out_time),
+
+		check_in_lat: row.check_in_lat,
+		check_in_lng: row.check_in_lng,
+		check_out_lat: row.check_out_lat,
+		check_out_lng: row.check_out_lng
+	  });
+	});
 
     res.setHeader(
       "Content-Type",
