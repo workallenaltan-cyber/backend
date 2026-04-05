@@ -42,27 +42,53 @@ function login() {
 }*/
 
 function check() {
-  navigator.geolocation.getCurrentPosition(pos => {
+  const btn = document.getElementById("checkBtn");
 
-    fetch("/api/check", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "authorization": localStorage.getItem("token")
-      },
-      body: JSON.stringify({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      alert(data.msg);
-    });
+  // 1️⃣ 立即反馈（关键）
+  btn.innerText = "打卡中...";
+  btn.disabled = true;
 
-  }, () => {
-    alert("无法获取GPS");
+  // 2️⃣ 先快速提示
+  alert("正在打卡，请稍等...");
+
+  // 3️⃣ 获取GPS（异步）
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      sendCheck(pos.coords.latitude, pos.coords.longitude, btn);
+    },
+    err => {
+      alert("定位失败");
+      btn.innerText = "打卡";
+      btn.disabled = false;
+    },
+    {
+      enableHighAccuracy: false,  // ⚡ 提升速度
+      timeout: 3000,              // ⚡ 最多等3秒
+      maximumAge: 60000           // ⚡ 用缓存定位
+    }
+  );
+}
+
+function sendCheck(lat, lng, btn) {
+  fetch("/api/check", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "authorization": localStorage.getItem("token")
+    },
+    body: JSON.stringify({ lat, lng })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.msg);
+
+    btn.innerText = "已打卡";
+    btn.style.background = "green";
+  })
+  .catch(() => {
+    alert("网络错误");
+    btn.innerText = "打卡";
+    btn.disabled = false;
   });
 }
 
