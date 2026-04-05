@@ -18,13 +18,13 @@ router.post("/login", async (req, res) => {
   }
 
   const valid = await bcrypt.compare(password, user.rows[0].password);
+if (!valid) {
+  console.log("❌ 登录失败");
+  console.log("输入:", employeeId, password);
+  console.log("数据库:", user.rows);
 
-  if (!valid) {
-    return res.json({ status: "fail" });
-	console.log("输入:", employeeId, password);
-	console.log("数据库:", user.rows);
-  }
-
+  return res.json({ status: "fail" });
+}
   const token = jwt.sign(
     { id: employeeId },
     process.env.JWT_SECRET
