@@ -70,7 +70,10 @@ module.exports = router;
 router.get("/all", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM attendance ORDER BY date DESC"
+      "SELECT attendance.employee_id,users.employee_name,company.company_name,attendance.date,attendance.check_in_time,attendance.check_out_time,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
+		FROM attendance inner join users on attendance.employee_id=users.employee_id \
+		LEFT  join company on users.company_code=company.company_code \
+		ORDER BY attendance.date DESC"
     );
 
     res.json(result.rows);
@@ -102,7 +105,7 @@ router.get("/export", async (req, res) => {
 	  { header: "Employee Name", key: "employee_name" },
 	  { header: "Company Name", key: "company_name" },
       { header: "日期", key: "date" },
-      { header: "上班时间", key: "check_in_time",style: { numFmt: 'hh:mm:ss' } } },
+      { header: "上班时间", key: "check_in_time",style: { numFmt: 'hh:mm:ss' }},
       { header: "下班时间", key: "check_out_time",style: { numFmt: 'hh:mm:ss' }},
       { header: "上班纬度", key: "check_in_lat" },
       { header: "上班经度", key: "check_in_lng" },
