@@ -70,7 +70,7 @@ module.exports = router;
 router.get("/all", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT attendance.employee_id,users.employee_name,company.company_name,attendance.date,to_char(attendance.check_in_time, 'HH24:MI:SS') check_in_time,to_char(attendance.check_out_time, 'HH24:MI:SS') check_out_time,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
+      "SELECT attendance.employee_id,users.employee_name,company.company_name,TO_CHAR(attendance.date, 'DD/MM/YYYY')adate,to_char(attendance.check_in_time, 'HH24:MI:SS') check_in_time,to_char(attendance.check_out_time, 'HH24:MI:SS') check_out_time,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
 		FROM attendance inner join users on attendance.employee_id=users.employee_id \
 		LEFT  join company on users.company_code=company.company_code\
 		ORDER BY attendance.date DESC"
@@ -90,7 +90,7 @@ const ExcelJS = require("exceljs");
 router.get("/export", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT attendance.employee_id,users.employee_name,company.company_name,attendance.date,to_char(attendance.check_in_time, 'HH24:MI:SS') check_in_time,to_char(attendance.check_out_time, 'HH24:MI:SS') check_out_time,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
+      "SELECT attendance.employee_id,users.employee_name,company.company_name,TO_CHAR(attendance.date, 'DD/MM/YYYY')adate,to_char(attendance.check_in_time, 'HH24:MI:SS') check_in_time,to_char(attendance.check_out_time, 'HH24:MI:SS') check_out_time,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
 		FROM attendance inner join users on attendance.employee_id=users.employee_id \
 		LEFT  join company on users.company_code=company.company_code \
 		ORDER BY attendance.date DESC"
@@ -104,7 +104,7 @@ router.get("/export", async (req, res) => {
       { header: "员工ID", key: "employee_id" },
 	  { header: "Employee Name", key: "employee_name" },
 	  { header: "Company Name", key: "company_name" },
-      { header: "日期", key: "date" },
+      { header: "日期", key: "adate" },
       { header: "上班时间", key: "check_in_time"},
       { header: "下班时间", key: "check_out_time"},
       { header: "上班纬度", key: "check_in_lat" },
