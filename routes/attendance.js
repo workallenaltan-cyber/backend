@@ -70,9 +70,9 @@ module.exports = router;
 router.get("/all", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT attendance.employee_id,users.employee_name,company.company_name,attendance.date,to_char(attendance.check_in_time, 'HH24:MI:SS'),to_char(attendance.check_out_time, 'HH24:MI:SS'),,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
+      "SELECT attendance.employee_id,users.employee_name,company.company_name,attendance.date,to_char(attendance.check_in_time, 'HH24:MI:SS'),to_char(attendance.check_out_time, 'HH24:MI:SS'),attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
 		FROM attendance inner join users on attendance.employee_id=users.employee_id \
-		LEFT  join company on users.company_code=company.company_code \
+		LEFT  join company on users.company_code=company.company_code\
 		ORDER BY attendance.date DESC"
     );
 
@@ -90,7 +90,7 @@ const ExcelJS = require("exceljs");
 router.get("/export", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT attendance.employee_id,users.employee_name,company.company_name,attendance.date,to_char(attendance.check_in_time, 'HH24:MI:SS'),to_char(attendance.check_out_time, 'HH24:MI:SS'),,attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
+      "SELECT attendance.employee_id,users.employee_name,company.company_name,attendance.date,to_char(attendance.check_in_time, 'HH24:MI:SS'),to_char(attendance.check_out_time, 'HH24:MI:SS'),attendance.check_in_lat,attendance.check_in_lng,attendance.check_out_lat,attendance.check_out_lng \
 		FROM attendance inner join users on attendance.employee_id=users.employee_id \
 		LEFT  join company on users.company_code=company.company_code \
 		ORDER BY attendance.date DESC"
