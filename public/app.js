@@ -65,22 +65,6 @@ function check() {
     alert("无法获取GPS");
   });
 }
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-GB"); 
-  // 结果: 05/04/2026
-}
-
-function formatTime(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit"
-  });
-  // 结果: 08:30:15
-}
 
 function loadAll() {
   fetch("/api/all")
@@ -95,9 +79,9 @@ function loadAll() {
         const tr = `
           <tr>
             <td>${row.employee_id}</td>
-            <td>${formatDate(row.date)}</td>
-            <td>${formatTime(row.check_in_time)}</td>
-            <td>${formatTime(row.check_out_time)}</td>
+            <td>${row.date}</td>
+            <td>${row.check_in_time}</td>
+            <td>${row.check_out_time}</td>
             <td>${row.check_in_lat}, ${row.check_in_lng}</td>
             <td>${row.check_out_lat || ""}, ${row.check_out_lng || ""}</td>
           </tr>

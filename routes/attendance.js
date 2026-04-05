@@ -105,41 +105,22 @@ router.get("/export", async (req, res) => {
 	  { header: "Employee Name", key: "employee_name" },
 	  { header: "Company Name", key: "company_name" },
       { header: "日期", key: "date" },
-      { header: "上班时间", key: "check_in_time",style: { numFmt: 'hh:mm:ss' }},
-      { header: "下班时间", key: "check_out_time",style: { numFmt: 'hh:mm:ss' }},
+      { header: "上班时间", key: "check_in_time"},
+      { header: "下班时间", key: "check_out_time"},
       { header: "上班纬度", key: "check_in_lat" },
       { header: "上班经度", key: "check_in_lng" },
       { header: "下班纬度", key: "check_out_lat" },
       { header: "下班经度", key: "check_out_lng" }
     ];
 	
-	function formatDateTime(dateStr) {
-	  if (!dateStr) return "";
-
-	  const d = new Date(dateStr);
-
-	  // 时区修正（马来西亚 +8）
-	  d.setHours(d.getHours() + 8);
-
-	  const year = d.getFullYear();
-	  const month = String(d.getMonth() + 1).padStart(2, "0");
-	  const day = String(d.getDate()).padStart(2, "0");
-
-	  const hour = String(d.getHours()).padStart(2, "0");
-	  const min = String(d.getMinutes()).padStart(2, "0");
-	  const sec = String(d.getSeconds()).padStart(2, "0");
-
-	  return `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-	}
-
     // 数据
     result.rows.forEach(row => {
 	  sheet.addRow({
 		employee_id: row.employee_id,
 		date: row.date,
 
-		check_in_time: formatDateTime(row.check_in_time),
-		check_out_time: formatDateTime(row.check_out_time),
+		check_in_time: row.check_in_time,
+		check_out_time: row.check_out_time,
 
 		check_in_lat: row.check_in_lat,
 		check_in_lng: row.check_in_lng,
