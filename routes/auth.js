@@ -31,11 +31,7 @@ router.post("/login", async (req, res) => {
     process.env.JWT_SECRET
   );
 
-  res.json({
-  status: "success",
-  token,
-  role: user.rows[0].role
-
+  res.json({ status: "success", token });
 });
 
 module.exports = router;
