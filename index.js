@@ -30,17 +30,26 @@ app.get("/attendance", async (req, res) => {
 });
 
 // 插入数据
-app.post("/attendance", async (req, res) => {
-  const { employee_id, lat, lng } = req.body;
+app.post("/api/login", async (req, res) => {
+  try {
+    const { employeeId, password } = req.body;
 
-  const result = await pool.query(
-    `INSERT INTO attendance (employee_id, date, check_in, lat, lng)
-     VALUES ($1, CURRENT_DATE, NOW(), $2, $3)
-     RETURNING *`,
-    [employee_id, lat, lng]
-  );
+    // 👉 示例：直接写死（先跑通）
+    if (employeeId === "MA001" && password === "1234") {
+      return res.json({
+        status: "success",
+        token: "abc123"
+      });
+    }
 
-  res.json(result.rows[0]);
+    return res.json({
+      status: "fail"
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server error" });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
