@@ -1,9 +1,8 @@
-// 登录
-/*function login() {
-  console.log("登录点击");
-
+function login() {
   const employeeId = document.getElementById("id").value;
   const password = document.getElementById("pw").value;
+  
+  alert(employeeId);
 
   fetch("/api/login", {
     method: "POST",
@@ -20,6 +19,7 @@
     console.log("返回:", data);
 
     if (data.status === "success") {
+      alert("登录成功");
       localStorage.setItem("token", data.token);
       window.location = "dashboard.html";
     } else {
@@ -27,36 +27,12 @@
     }
   })
   .catch(err => {
-    console.error("错误:", err);
+    console.error(err);
     alert("请求失败");
   });
 }
 
-
-// 打卡
-function check() {
-  navigator.geolocation.getCurrentPosition(pos => {
-
-    fetch("/api/check", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "authorization": localStorage.getItem("token")
-      },
-      body: JSON.stringify({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      alert(data.msg);
-    });
-
-  });
-}*/
-function login() {
+/*function login() {
   alert("我是新的JS文件");
   alert("按钮测试成功");
 
@@ -64,4 +40,4 @@ function login() {
   const password = document.getElementById("pw").value;
 
   console.log(employeeId, password);
-}
+}*/
