@@ -2,31 +2,29 @@ let token = localStorage.getItem("token");
 
 function login() {
   //fetch("/api/login", {//
-  fetch("https://backend-z9ir.onrender.com/api/login", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      employeeId: id.value,
-      password: pw.value
-    })
-  })
-   .then(res => res.text())   // 👈 先用 text 看真实返回
-  .then(data => {
-    console.log("返回内容:", data);
+  app.post("/api/login", async (req, res) => {
+  try {
+    const { employeeId, password } = req.body;
 
-    try {
-      const json = JSON.parse(data);
+    // ❌ 不要查数据库（先注释掉）
+    // const result = await pool.query(...);
 
-      if (json.status === "success") {
-        localStorage.setItem("token", json.token);
-        window.location = "dashboard.html";
-      } else {
-        alert("登录失败");
-      }
-    } catch (e) {
-      alert("后端没有返回JSON！");
+    if (employeeId === "MA001" && password === "1234") {
+      return res.json({
+        status: "success",
+        token: "abc123"
+      });
     }
-  });
+
+    return res.json({ status: "fail" });
+
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    res.status(500).json({ error: "server error" });
+  }
+});
+
+    
 }
 
 function check() {
