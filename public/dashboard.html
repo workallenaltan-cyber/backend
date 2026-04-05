@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html>
+<script>
+if (!localStorage.getItem("token")) {
+  window.location = "index.html";
+}
+</script>
 <body>
 <h2>打卡系统</h2>
 

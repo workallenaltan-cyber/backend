@@ -65,3 +65,32 @@ function check() {
     alert("无法获取GPS");
   });
 }
+
+function loadAll() {
+  fetch("/api/all")
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+
+      const table = document.getElementById("tableBody");
+      table.innerHTML = "";
+
+      data.forEach(row => {
+        const tr = `
+          <tr>
+            <td>${row.employee_id}</td>
+            <td>${row.date}</td>
+            <td>${row.check_in_time || ""}</td>
+            <td>${row.check_out_time || ""}</td>
+            <td>${row.check_in_lat}, ${row.check_in_lng}</td>
+            <td>${row.check_out_lat || ""}, ${row.check_out_lng || ""}</td>
+          </tr>
+        `;
+        table.innerHTML += tr;
+      });
+    });
+}
+
+function exportExcel() {
+  window.open("/api/export");
+}

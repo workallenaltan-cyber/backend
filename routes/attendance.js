@@ -65,3 +65,66 @@ router.post("/check", verify, async (req, res) => {
 });
 
 module.exports = router;
+
+// 获取全部打卡记录（管理员）
+router.get("/all", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM attendance ORDER BY date DESC"
+    );
+
+    res.json(result.rows);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "服务器错误" });
+  }
+});
+
+const ExcelJS = require("exceljs");
+
+// 导出 Excel
+router.get("/export", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM attendance ORDER BY date DESC"
+    );
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Attendance");
+
+    // 表头
+    sheet.columns = [
+      { header: "员工ID", key: "employee_id" },
+      { header: "日期", key: "date" },
+      { header: "上班时间", key: "check_in_time" },
+      { header: "下班时间", key: "check_out_time" },
+      { header: "上班纬度", key: "check_in_lat" },
+      { header: "上班经度", key: "check_in_lng" },
+      { header: "下班纬度", key: "check_out_lat" },
+      { header: "下班经度", key: "check_out_lng" }
+    ];
+
+    // 数据
+    result.rows.forEach(row => {
+      sheet.addRow(row);
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=attendance.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("导出失败");
+  }
+});
