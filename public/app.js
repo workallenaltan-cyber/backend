@@ -20,7 +20,11 @@ function login() {
     if (data.status === "success") {
       alert("登录成功");
       localStorage.setItem("token", data.token);
-      window.location = "dashboard.html";
+      if (data.role === "admin") {
+		  window.location = "admin.html";
+		} else {
+		  window.location = "dashboard.html";
+		}
     } else {
       alert("登录失败");
     }

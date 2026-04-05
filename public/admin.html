@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html>
+<script>
+if (!localStorage.getItem("token")) {
+  window.location = "index.html";
+}
+</script>
 <body onload="loadAll()">
 
 <h2>打卡记录（管理员）</h2>
