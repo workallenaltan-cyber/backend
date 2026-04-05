@@ -130,6 +130,17 @@ router.get("/export", async (req, res) => {
 		check_out_lng: row.check_out_lng
 	  });
 	});
+	
+	sheet.columns.forEach(column => {
+	  let maxLength = 10;
+
+	  column.eachCell({ includeEmpty: true }, cell => {
+		const val = cell.value ? cell.value.toString() : "";
+		maxLength = Math.max(maxLength, val.length);
+	  });
+
+	  column.width = maxLength + 2;
+	});
 
     res.setHeader(
       "Content-Type",
