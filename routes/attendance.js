@@ -34,7 +34,7 @@ router.post("/check", verify, async (req, res) => {
       await pool.query(
         `INSERT INTO attendance 
         (employee_id, date, check_in_time, check_in_lat, check_in_lng)
-        VALUES ($1,$2,NOW(),$3,$4)`,
+        VALUES ($1,$2,NOW() AT TIME ZONE 'Asia/Kuala_Lumpur',$3,$4)`,
         [employeeId, today, lat, lng]
       );
 
@@ -45,7 +45,7 @@ router.post("/check", verify, async (req, res) => {
     if (!result.rows[0].check_out_time) {
       await pool.query(
         `UPDATE attendance SET 
-          check_out_time=NOW(),
+          check_out_time=NOW() AT TIME ZONE 'Asia/Kuala_Lumpur',
           check_out_lat=$1,
           check_out_lng=$2
         WHERE employee_id=$3 AND date=$4`,
