@@ -119,7 +119,7 @@ router.get("/export", async (req, res) => {
 		employee_id: row.employee_id,
 		employee_name : row.employee_name,
 		company_name : row.company_name,
-		date: row.adate,
+		adate: row.adate,
 
 		check_in_time: row.check_in_time,
 		check_out_time: row.check_out_time,
