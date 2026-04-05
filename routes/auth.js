@@ -17,8 +17,9 @@ router.post("/login", async (req, res) => {
     return res.json({ status: "fail" });
   }
 
-  const valid = await bcrypt.compare(password, user.rows[0].password);
-if (!valid) {
+  //const valid = await bcrypt.compare(password, user.rows[0].password);
+  const valid = password === user.rows[0].password;
+  if (!valid) {
   console.log("❌ 登录失败1");
   console.log("输入:", employeeId, password);
   console.log("数据库:", user.rows);
