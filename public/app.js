@@ -1,8 +1,7 @@
 function login() {
   const employeeId = document.getElementById("id").value;
   const password = document.getElementById("pw").value;
-  
-  alert(employeeId);
+
 
   fetch("/api/login", {
     method: "POST",
