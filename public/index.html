@@ -1,14 +1,137 @@
 <!DOCTYPE html>
-<html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>打卡系统登录</title>
+
+  <!-- 手机适配 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      display: flex;
+      width: 900px;
+      max-width: 95%;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* 左边 */
+    .left {
+      flex: 1;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .left h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .left p {
+      opacity: 0.8;
+    }
+
+    /* 右边 */
+    .right {
+      flex: 1;
+      padding: 40px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #667eea;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #5a67d8;
+    }
+
+    .footer {
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: center;
+      color: #888;
+    }
+
+    /* 手机版 */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .left {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
 <body>
-<h2>登录</h2>
 
-<input id="id" placeholder="员工ID"><br>
-<input id="pw" type="password"><br>
+<div class="container">
 
-<button onclick="login()">登录</button>
+  <!-- 左边 -->
+  <div class="left">
+    <h1>Attendance System</h1>
+    <p>企业打卡管理 · GPS定位 · 报表分析</p>
+  </div>
+
+  <!-- 右边 -->
+  <div class="right">
+    <h2>登录</h2>
+
+    <input type="text" id="id" placeholder="员工ID">
+    <input type="password" id="pw" placeholder="密码">
+
+    <button onclick="login()">登录</button>
+
+    <div class="footer">
+      © 2026 Company System
+    </div>
+  </div>
+
+</div>
 
 <script src="/app.js"></script>
+
 </body>
 </html>
