@@ -40,3 +40,28 @@ function login() {
 
   console.log(employeeId, password);
 }*/
+
+function check() {
+  navigator.geolocation.getCurrentPosition(pos => {
+
+    fetch("/api/check", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      alert(data.msg);
+    });
+
+  }, () => {
+    alert("无法获取GPS");
+  });
+}
