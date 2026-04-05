@@ -1,10 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
-const verifyToken = require("../middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
+
+// 验证token
+function verify(req, res, next) {
+  const token = req.headers["authorization"];
+  if (!token) return res.sendStatus(403);
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(401);
+    req.user = user;
+    next();
+  });
+}
 
 // 打卡
-router.post("/check", verifyToken, async (req, res) => {
+router.post("/check", verify, async (req, res) => {
   const { lat, lng } = req.body;
   const employeeId = req.user.id;
 
@@ -22,34 +34,22 @@ router.post("/check", verifyToken, async (req, res) => {
       VALUES ($1,$2,NOW(),$3,$4)`,
       [employeeId, today, lat, lng]
     );
-    return res.json({ msg: "Checked In" });
+    return res.json({ msg: "上班打卡成功" });
   }
 
-  const row = result.rows[0];
-
-  if (!row.check_out_time) {
+  if (!result.rows[0].check_out_time) {
     await pool.query(
-      `UPDATE attendance 
-       SET check_out_time=NOW(),
-           check_out_lat=$1,
-           check_out_lng=$2
-       WHERE employee_id=$3 AND date=$4`,
+      `UPDATE attendance SET 
+        check_out_time=NOW(),
+        check_out_lat=$1,
+        check_out_lng=$2
+      WHERE employee_id=$3 AND date=$4`,
       [lat, lng, employeeId, today]
     );
-    return res.json({ msg: "Checked Out" });
+    return res.json({ msg: "下班打卡成功" });
   }
 
-  res.json({ msg: "Already Completed" });
-});
-
-// 查看个人记录
-router.get("/my", verifyToken, async (req, res) => {
-  const data = await pool.query(
-    "SELECT * FROM attendance WHERE employee_id=$1 ORDER BY date DESC",
-    [req.user.id]
-  );
-
-  res.json(data.rows);
+  res.json({ msg: "今天已完成打卡" });
 });
 
 module.exports = router;

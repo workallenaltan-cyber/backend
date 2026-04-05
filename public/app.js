@@ -1,38 +1,46 @@
-let token = localStorage.getItem("token");
+// 登录
+/*function login() {
+  console.log("登录点击");
 
-function login() {
-  //fetch("/api/login", {//
-  app.post("/api/login", async (req, res) => {
-  try {
-    const { employeeId, password } = req.body;
+  const employeeId = document.getElementById("id").value;
+  const password = document.getElementById("pw").value;
 
-    // ❌ 不要查数据库（先注释掉）
-    // const result = await pool.query(...);
+  fetch("/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      employeeId: employeeId,
+      password: password
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("返回:", data);
 
-    if (employeeId === "MA001" && password === "1234") {
-      return res.json({
-        status: "success",
-        token: "abc123"
-      });
+    if (data.status === "success") {
+      localStorage.setItem("token", data.token);
+      window.location = "dashboard.html";
+    } else {
+      alert("登录失败");
     }
-
-    return res.json({ status: "fail" });
-
-  } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    res.status(500).json({ error: "server error" });
-  }
-});
-
-    
+  })
+  .catch(err => {
+    console.error("错误:", err);
+    alert("请求失败");
+  });
 }
 
+
+// 打卡
 function check() {
   navigator.geolocation.getCurrentPosition(pos => {
+
     fetch("/api/check", {
       method: "POST",
       headers: {
-        "Content-Type":"application/json",
+        "Content-Type": "application/json",
         "authorization": localStorage.getItem("token")
       },
       body: JSON.stringify({
@@ -40,22 +48,20 @@ function check() {
         lng: pos.coords.longitude
       })
     })
-    .then(res=>res.json())
-    .then(data=>alert(data.msg));
-  });
-}
-
-function load() {
-  fetch("/api/my", {
-    headers: {
-      "authorization": localStorage.getItem("token")
-    }
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    list.innerHTML="";
-    data.forEach(r=>{
-      list.innerHTML += `<li>${r.date} - ${r.check_in_time} / ${r.check_out_time}</li>`;
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      alert(data.msg);
     });
+
   });
+}*/
+function login() {
+  alert("我是新的JS文件");
+  alert("按钮测试成功");
+
+  const employeeId = document.getElementById("id").value;
+  const password = document.getElementById("pw").value;
+
+  console.log(employeeId, password);
 }

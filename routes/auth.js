@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+// 登录
 router.post("/login", async (req, res) => {
   const { employeeId, password } = req.body;
 
@@ -12,19 +13,18 @@ router.post("/login", async (req, res) => {
     [employeeId]
   );
 
-  if (user.rows.length === 0)
+  if (user.rows.length === 0) {
     return res.json({ status: "fail" });
+  }
 
   const valid = await bcrypt.compare(password, user.rows[0].password);
 
-  if (!valid)
+  if (!valid) {
     return res.json({ status: "fail" });
+  }
 
   const token = jwt.sign(
-    {
-      id: employeeId,
-      role: user.rows[0].role
-    },
+    { id: employeeId },
     process.env.JWT_SECRET
   );
 
