@@ -70,6 +70,21 @@ function check() {
   });
 }
 
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toISOString().slice(0, 10);
+}
+
+function formatTime(dateStr) {
+  const d = new Date(dateStr);
+
+  const h = String(d.getHours()).padStart(2, "0");
+  const m = String(d.getMinutes()).padStart(2, "0");
+  const s = String(d.getSeconds()).padStart(2, "0");
+
+  return `${h}:${m}:${s}`;
+}
+
 function loadAll() {
   fetch("/api/all")
     .then(res => res.json())
@@ -83,14 +98,9 @@ function loadAll() {
         const tr = `
           <tr>
             <td>${row.employee_id}</td>
-            <td> ${new Date(row.date).toLocaleDateString('en-GB')} </td>
-            <td>${new Date(row.check_in_time).toLocaleTimeString('en-GB', { 
-					hour: '2-digit', 
-					minute: '2-digit', 
-					hour12: false 
-				}) || ""}
-			</td>
-            <td>${row.check_out_time || ""}</td>
+            <td>${formatDate(row.date)}</td>
+            <td>${formatTime(row.check_in_time) || ""}</td>
+            <td>${formatTime(row.check_out_time) || ""}</td>
             <td>${row.check_in_lat}, ${row.check_in_lng}</td>
             <td>${row.check_out_lat || ""}, ${row.check_out_lng || ""}</td>
           </tr>
