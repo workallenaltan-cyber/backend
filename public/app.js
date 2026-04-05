@@ -79,6 +79,7 @@ function loadAll() {
         const tr = `
           <tr>
             <td>${row.employee_id}</td>
+			<td>${row.employee_name}</td>
 			<td>${row.company_name}</td>
             <td>${row.adate}</td>
             <td>${row.check_in_time}</td>
