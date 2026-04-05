@@ -117,7 +117,8 @@ router.get("/export", async (req, res) => {
     result.rows.forEach(row => {
 	  sheet.addRow({
 		employee_id: row.employee_id,
-		date: row.date,
+		company_name :row.employee_company_name,
+		date: row.adate,
 
 		check_in_time: row.check_in_time,
 		check_out_time: row.check_out_time,
