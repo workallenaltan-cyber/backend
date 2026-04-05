@@ -21,6 +21,8 @@ router.post("/login", async (req, res) => {
 
   if (!valid) {
     return res.json({ status: "fail" });
+	console.log("输入:", employeeId, password);
+	console.log("数据库:", user.rows);
   }
 
   const token = jwt.sign(
