@@ -5,6 +5,14 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
+app.use(cors()); // ⭐ 关键
+app.use(express.json());
+
 const { Pool } = pkg;
 
 const app = express();
