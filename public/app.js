@@ -352,7 +352,7 @@ function loadAll() {
 ========================= */
 function exportExcel() {
   fetch("/api/export", {
-    headers: { "authorization": token }
+    headers: { "Authorization": "Bearer " + token }
   })
   .then(res => {
     if (res.status === 401 || res.status === 403) {
