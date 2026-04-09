@@ -77,18 +77,7 @@ function check() {
         lng: pos.coords.longitude
       })
     })
-    .then(res => .then(res => {
-
-      // 🔥 后端验证失败
-      if (res.status === 401 || res.status === 403) {
-        alert("登录已过期，请重新登录");
-        localStorage.clear();
-        window.location = "index.html";
-        return;
-      }
-
-      return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
       alert(data.msg);
 
