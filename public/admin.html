@@ -1,21 +1,3 @@
-<script>
-/*fetch("/api/status", {
-  headers: {
-    "authorization": localStorage.getItem("token")
-  }
-})
-.then(res => res.json())
-.then(status => {
-
-  if (status.status === "not_checked_in" && location.pathname.includes("checkin")) return;
-  if (status.status === "checked_in" && location.pathname.includes("checkout")) return;
-  if (status.status === "completed" && location.pathname.includes("done")) return;
-
-  // ❌ 状态不匹配 → 重定向
-  location.href = "dashboard.html";
-});*/
-</script>
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -24,101 +6,81 @@
 <title>打卡记录（管理员）</title>
 
 <style>
-  :root {
-    /* 👉 这里换成你登录页的主色 */
-    --primary: #4f46e5;
-    --primary-light: #eef2ff;
-  }
+:root {
+  --primary: #4f46e5;
+}
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #f9fafb;
-    margin: 0;
-    padding: 24px;
-  }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+  background: #f9fafb;
+  margin: 0;
+  padding: 24px;
+}
 
-  .container {
-    max-width: 1100px;
-    margin: auto;
-  }
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
 
-  h2 {
-    margin-bottom: 16px;
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
+.btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
 
-  .btn {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 500;
-  }
+.card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
 
-  .btn:hover {
-    opacity: 0.9;
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  .card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    overflow: hidden;
-  }
+thead {
+  background: #f3f4f6;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+th, td {
+  padding: 14px;
+}
 
-  thead {
-    background: #f3f4f6;
-    color: #6b7280;
-    font-size: 14px;
-  }
+tbody tr {
+  border-top: 1px solid #eee;
+}
 
-  th, td {
-    padding: 14px;
-    text-align: left;
-  }
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
 
-  tbody tr {
-    border-top: 1px solid #eee;
-    transition: 0.2s;
-  }
+.on-time {
+  background: #dcfce7;
+  color: #166534;
+}
 
-  tbody tr:hover {
-    background: #f9fafb;
-  }
-
-  .badge {
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .on-time {
-    background: #dcfce7;
-    color: #166534;
-  }
-
-  .late {
-    background: #fee2e2;
-    color: #991b1b;
-  }
+.late {
+  background: #fee2e2;
+  color: #991b1b;
+}
 </style>
 </head>
 
-<body onload="loadAll()">
+<body>
 
 <div class="container">
 
@@ -133,10 +95,10 @@
         <tr>
           <th>员工ID</th>
           <th>员工</th>
-          <th>Company</th>
+          <th>公司</th>
           <th>日期</th>
-          <th>上班时间</th>
-          <th>下班时间</th>
+          <th>上班</th>
+          <th>下班</th>
           <th>上班地点</th>
           <th>下班地点</th>
           <th>状态</th>
@@ -148,27 +110,95 @@
 
 </div>
 
-<script src="/app.js"></script>
-
 <script>
-// 👉 示例：你可以在 loadAll 里填充数据
-function renderRow(r) {
-  const statusClass = r.status === 'Late' ? 'late' : 'on-time';
+/* =========================
+   ✅ 页面加载检查 token
+========================= */
+const token = localStorage.getItem("token");
 
-  return `
-    <tr>
-      <td>${r.employee_id}</td>
-      <td>${r.name}</td>
-      <td>${r.company}</td>
-      <td>${r.date}</td>
-      <td>${r.checkin}</td>
-      <td>${r.checkout || '-'}</td>
-      <td>${r.checkin_location}</td>
-      <td>${r.checkout_location || '-'}</td>
-      <td><span class="badge ${statusClass}">${r.status}</span></td>
-    </tr>
-  `;
+if (!token) {
+  alert("请先登录");
+  window.location = "index.html";
 }
+
+/* =========================
+   ✅ 加载数据
+========================= */
+function loadAll() {
+  fetch("/api/all", {
+    headers: {
+      "authorization": token
+    }
+  })
+  .then(res => {
+    if (res.status === 401 || res.status === 403) {
+      alert("登录已过期");
+      localStorage.clear();
+      window.location = "index.html";
+    }
+    return res.json();
+  })
+  .then(data => {
+    const table = document.getElementById("tableBody");
+    table.innerHTML = "";
+
+    data.forEach(row => {
+
+      // ✅ 判断迟到（9:00后算迟到）
+      let status = "On Time";
+      let statusClass = "on-time";
+
+      if (row.check_in_time && row.check_in_time > "09:00:00") {
+        status = "Late";
+        statusClass = "late";
+      }
+
+      const tr = `
+        <tr>
+          <td>${row.employee_id}</td>
+          <td>${row.employee_name}</td>
+          <td>${row.company_name || ""}</td>
+          <td>${row.adate}</td>
+          <td>${row.check_in_time || "-"}</td>
+          <td>${row.check_out_time || "-"}</td>
+          <td>${row.check_in_lat}, ${row.check_in_lng}</td>
+          <td>${row.check_out_lat || "-"}, ${row.check_out_lng || "-"}</td>
+          <td><span class="badge ${statusClass}">${status}</span></td>
+        </tr>
+      `;
+
+      table.innerHTML += tr;
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    alert("加载失败");
+  });
+}
+
+/* =========================
+   ✅ 导出 Excel（带 token）
+========================= */
+function exportExcel() {
+  fetch("/api/export", {
+    headers: {
+      "authorization": token
+    }
+  })
+  .then(res => res.blob())
+  .then(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "attendance.xlsx";
+    a.click();
+  });
+}
+
+/* =========================
+   🚀 启动
+========================= */
+loadAll();
 </script>
 
 </body>
