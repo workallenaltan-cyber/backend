@@ -145,7 +145,4 @@ router.get("/me", authMiddleware, (req, res) => {
 // =====================
 // ✅ 导出
 // =====================
-module.exports = {
-  router,
-  authMiddleware
-};
+module.exports = router;
