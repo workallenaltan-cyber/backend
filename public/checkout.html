@@ -16,161 +16,175 @@ fetch("/api/status", {
 });
 </script>
 
-<h2>下班打卡</h2>
-<button onclick="check()">CHECK OUT</button>
-<script src="/app.js"></script>
-
-
-<script>
-fetch("/api/status", {
-  headers: {
-    "authorization": localStorage.getItem("token")
-  }
-})
-.then(res => res.json())
-.then(status => {
-
-  if (status.status === "not_checked_in" && location.pathname.includes("checkin")) return;
-  if (status.status === "checked_in" && location.pathname.includes("checkout")) return;
-  if (status.status === "completed" && location.pathname.includes("done")) return;
-
-  // ❌ 状态不匹配 → 重定向
-  location.href = "dashboard.html";
-});
-</script>
 
 <!DOCTYPE html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+/* ===== 基础设置 ===== */
+* {
+  box-sizing: border-box;
+}
 
-    .container {
-      display: flex;
-      width: 900px;
-      max-width: 95%;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
 
-    /* 左边 */
-    .left {
-      flex: 1;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    .left h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
+/* ===== 容器 ===== */
+.container {
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  height: 100%;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
 
-    .left p {
-      opacity: 0.8;
-    }
-
-    /* 右边 */
-    .right {
-      flex: 1;
-      padding: 40px;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      background: #667eea;
-      color: white;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #5a67d8;
-    }
-
-    .footer {
-      margin-top: 10px;
-      font-size: 12px;
-      text-align: center;
-      color: #888;
-    }
-
-    /* 手机版 */
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .left {
-        display: none;
-      }
-    }
-	
-
-
-/* 顶部区域 */
-.header {
-  position: relative;
-  padding: 20px;
+/* ===== 主内容 ===== */
+.center {
+  flex: 1;
+  color: black;
+  padding: 40px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 标题 */
-.header h1 {
-  margin: 0;
+.center h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-/* 👉 用户信息（右上角） */
+/* ===== 用户信息（右上角） ===== */
 .user-box {
   position: absolute;
-  top: 20px;
+  top: 15px;
   right: 20px;
   text-align: right;
-  font-size: 14px;
+  font-size: 13px;
+  color: white;
 }
 
-/* 每一行分开 */
 .user-box p {
   margin: 2px 0;
 }
 
+/* ===== 输入框 ===== */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
 
-  </style>
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+/* ===== 按钮 ===== */
+button {
+  width: 100%;
+  padding: 16px;
+
+  border: none;
+  background: #667eea;
+  color: white;
+
+  font-size: 18px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #5a67d8;
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 10px;
+  font-size: 12px;
+  text-align: center;
+  color: #888;
+}
+
+/* ===== 手机优化（重点🔥） ===== */
+@media (max-width: 768px) {
+
+  body {
+    height: 100vh;
+    padding: 0;
+  }
+
+  .container {
+    width: 100%;
+    height: 100vh;
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  .center {
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .center h1 {
+    font-size: 26px;
+  }
+
+  button {
+    font-size: 20px;
+    padding: 18px;
+	margin-bottom: 20px;
+  }
+
+  .user-box {
+    top: 10px;
+    right: 15px;
+    font-size: 12px;
+  }
+}
+
+/* ===== 超小屏（更高级🔥） ===== */
+@media (max-width: 400px) {
+  .center h1 {
+    font-size: 22px;
+  }
+
+  button {
+    font-size: 18px;
+  }
+}
+</style>
 <body onload="loadStatus();loadUserInfo();">
 
-<div id="userInfo" class="user-box"></div>
+<div class="container">
 
-<h1>CHECK OUT</h1><br>
+  <div class="center">
+    
+	<div id="userInfo" style="margin-bottom: 20px;"></div>
+	<div><button id="checkInBtn" onclick="check()">CHECK OUT</button></div>
+  </div>
+
+</div>
 
 
-<button onclick="check()">CHECK OUT</button>
+
 
 <script src="/app.js"></script>
 </body>
