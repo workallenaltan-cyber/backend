@@ -276,60 +276,74 @@ function loadTodayRecord() {
 /* =========================
    ✅ 加载数据
 ========================= */
+// =====================
+// ✅ 加载全部记录（管理员🔥）
+// =====================
 function loadAll() {
-  fetch("/api/all", {
-    headers: { "authorization": token }
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  fetch(API + "/api/all", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
   })
   .then(res => {
-    if (res.status === 401 || res.status === 403) {
-      alert("登录已过期");
+
+    if (res.status === 401) {
       localStorage.clear();
       location.href = "index.html";
       return;
     }
+
     return res.json();
   })
   .then(data => {
-    const table = document.getElementById("tableBody");
-    table.innerHTML = "";
 
-    if (!data || data.length === 0) {
-      table.innerHTML = `<tr><td colspan="11">暂无数据</td></tr>`;
-      return;
-    }
+    const table = document.getElementById("tableBody");
+    if (!table) return;
+
+    table.innerHTML = "";
 
     data.forEach(row => {
 
-      let status = "On Time";
-      let statusClass = "on-time";
+      // ✅ 状态判断（加分🔥）
+      let status = "正常";
+      let className = "on-time";
 
-      if (row.check_in_time && row.check_in_time > "09:00:00") {
-        status = "Late";
-        statusClass = "late";
+      if (!row.check_out_time) {
+        status = "未下班";
+        className = "late";
       }
 
-      const tr = `
+      table.innerHTML += `
         <tr>
           <td>${row.employee_id}</td>
           <td>${row.employee_name}</td>
-          <td>${row.company_name || "-"}</td>
+          <td>${row.company_name}</td>
           <td>${row.adate}</td>
-          <td>${row.check_in_time || "-"}</td>
+          <td>${row.check_in_time}</td>
           <td>${row.check_out_time || "-"}</td>
           <td>${row.check_in_lat}, ${row.check_in_lng}</td>
           <td>${row.check_out_lat || "-"}, ${row.check_out_lng || "-"}</td>
-          <td>${row.check_in_ip || "-"}</td>
+          <td>${row.check_in_ip}</td>
           <td>${row.check_out_ip || "-"}</td>
-          <td><span class="badge ${statusClass}">${status}</span></td>
+          <td><span class="badge ${className}">${status}</span></td>
         </tr>
       `;
-
-      table.innerHTML += tr;
     });
+
+    // ❌ 没数据
+    if (data.length === 0) {
+      table.innerHTML = `<tr><td colspan="11">暂无数据</td></tr>`;
+    }
+
   })
   .catch(err => {
     console.error(err);
-    alert("加载失败");
+    document.getElementById("tableBody").innerHTML =
+      `<tr><td colspan="11">加载失败</td></tr>`;
   });
 }
 
