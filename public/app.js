@@ -17,7 +17,7 @@ function getToken() {
 // ✅ 登录
 // =====================
 function login() {
-  const employeeId = document.getElementById("id").value;
+  const employeeId = document.getElementById("id").value.toUpperCase();
   const password = document.getElementById("pw").value;
 
   fetch("/api/login", {
