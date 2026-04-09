@@ -62,17 +62,16 @@ function check() {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       alert(data.msg);
-	   // 🔥 打卡后刷新状态
-		loadStatus();
+
+      // 🔥 只刷新状态，不自己判断
+      loadStatus();
     });
 
   }, () => {
     alert("无法获取GPS");
   });
 }
-
 function loadAll() {
   fetch("/api/all")
     .then(res => res.json())
