@@ -5,18 +5,21 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 // =====================
-// ✅ 登录
+// ✅ 登录 API
 // =====================
 router.post("/login", async (req, res) => {
   try {
     const { employeeId, password } = req.body;
 
-    // ❗1. 参数检查（避免空值）
+    // ✅ 1. 参数检查
     if (!employeeId || !password) {
-      return res.status(400).json({ status: "fail", message: "Missing fields" });
+      return res.status(400).json({
+        status: "fail",
+        message: "请输入账号和密码"
+      });
     }
 
-    // ❗2. 查询用户（优化写法）
+    // ✅ 2. 查询用户 + 公司
     const result = await pool.query(
       `SELECT u.employee_id, u.employee_name, u.password, c.company_name
        FROM public.users u
@@ -27,27 +30,36 @@ router.post("/login", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(401).json({ status: "fail", message: "User not found" });
+      return res.status(401).json({
+        status: "fail",
+        message: "用户不存在"
+      });
     }
 
     const user = result.rows[0];
 
-    // ❗3. 密码验证
+    // ✅ 3. 验证密码
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
-      return res.status(401).json({ status: "fail", message: "Wrong password" });
+      return res.status(401).json({
+        status: "fail",
+        message: "密码错误"
+      });
     }
 
-    // ❗4. JWT SECRET 检查（很多人忘🔥）
+    // ✅ 4. 检查 JWT_SECRET
     if (!process.env.JWT_SECRET) {
       console.error("JWT_SECRET 未设置！");
-      return res.status(500).json({ status: "error", message: "Server config error" });
+      return res.status(500).json({
+        status: "error",
+        message: "服务器配置错误"
+      });
     }
 
-    // ❗5. 生成 token（建议加更多信息）
+    // ✅ 5. 生成 token
     const token = jwt.sign(
-      { 
+      {
         id: user.employee_id,
         name: user.employee_name
       },
@@ -55,7 +67,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: "8h" }
     );
 
-    // ❗6. 返回数据（统一格式）
+    // ✅ 6. 返回数据
     res.json({
       status: "success",
       token,
@@ -68,8 +80,65 @@ router.post("/login", async (req, res) => {
 
   } catch (err) {
     console.error("LOGIN ERROR:", err);
-    res.status(500).json({ status: "error", message: "Server error" });
+    res.status(500).json({
+      status: "error",
+      message: "服务器错误"
+    });
   }
 });
 
-module.exports = router;
+// =====================
+// ✅ Token 验证 Middleware
+// =====================
+const authMiddleware = (req, res, next) => {
+  try {
+    // ✅ 兼容大小写
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({ message: "未登录（没有token）" });
+    }
+
+    // ✅ Bearer 格式检查
+    const parts = authHeader.split(" ");
+
+    if (parts.length !== 2 || parts[0] !== "Bearer") {
+      return res.status(401).json({ message: "token 格式错误" });
+    }
+
+    const token = parts[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "token 缺失" });
+    }
+
+    // ✅ 验证 token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.user = decoded;
+
+    next();
+
+  } catch (err) {
+    console.error("TOKEN ERROR:", err.message);
+    return res.status(401).json({ message: "token 无效或已过期" });
+  }
+};
+
+// =====================
+// ✅ 测试用（可删）
+// =====================
+/*router.get("/me", authMiddleware, (req, res) => {
+  res.json({
+    message: "登录有效",
+    user: req.user
+  });
+});*/
+
+// =====================
+// ✅ 导出
+// =====================
+module.exports = {
+  router,
+  authMiddleware
+};
