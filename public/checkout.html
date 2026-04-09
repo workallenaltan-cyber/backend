@@ -1,5 +1,5 @@
 <script>
-/*fetch("/api/status", {
+/fetch("/api/status", {
   headers: {
     "authorization": localStorage.getItem("token")
   }
@@ -13,14 +13,7 @@
 
   // ❌ 状态不匹配 → 重定向
   location.href = "dashboard.html";
-});*/
-
-const token = localStorage.getItem("token");
-
-if (!token) {
-  alert("请先登录");
-  location.href = "index.html";
-}
+});
 </script> 
 
 
