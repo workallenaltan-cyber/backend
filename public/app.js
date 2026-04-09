@@ -372,7 +372,7 @@ function loadAll() {
    ✅ 导出 Excel（带 token）
 ========================= */
 function exportExcel() {
-  fetch("/api/export", {
+  fetch(API + "/api/export", {
     headers: { "Authorization": "Bearer " + token }
   })
   .then(res => {
