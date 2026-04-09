@@ -127,9 +127,27 @@ function loadStatus() {
       outBtn.style.display = "none";
       alert("今天已完成打卡");
     }
+	
+	if (data.status === "success") {
+	  localStorage.setItem("token", data.token);
+
+	  // ✅ 保存用户信息
+	  localStorage.setItem("user", JSON.stringify(data.user));
+
+	  window.location = "dashboard.html";
+	}
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   loadStatus();
 });
+
+function loadUserInfo() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) return;
+
+  document.getElementById("userInfo").innerText =
+    `Name: ${user.name} | ID: ${user.employeeId} | PUSAT: ${user.company}`;
+}

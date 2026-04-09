@@ -31,7 +31,18 @@ router.post("/login", async (req, res) => {
     process.env.JWT_SECRET
   );
 
-  res.json({ status: "success", token });
+   // ✅ 关键：在这里返回用户信息
+  res.json({
+    status: "success",
+    token,
+    user: {
+      employeeId: user.rows[0].employee_id,
+      name: user.rows[0].name,
+      company: user.rows[0].company
+    }
+  });
 });
+
+module.exports = router;
 
 module.exports = router;
