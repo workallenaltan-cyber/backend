@@ -162,7 +162,7 @@ function loadUserInfo() {
   document.getElementById("userInfo").innerHTML = `
   <div style="display:flex; align-items:center; gap:10px;">
     <div>
-		<h1 style="background-color: #5a67d8;">${user.company}</h1><br>
+		<h1 style="background-color: #5a67d8;color:white">${user.company}</h1><br>
 		<big><strong>${user.employeeId} - ${user.name} </strong></big>
     </div>
   </div>
