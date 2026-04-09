@@ -1,3 +1,7 @@
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+const role = user.role;
+const isAdmin = role === "admin";
+
 // =====================
 // ✅ API 地址
 // =====================
@@ -17,7 +21,11 @@ let token = localStorage.getItem("token");
 if (path.includes("index.html")) {
 
   if (token) {
-    location.href = "checkin.html";
+    if (isAdmin) {
+      location.href = "admin.html";
+    } else {
+      location.href = "checkin.html";
+    }
   }
 
 } else {
@@ -25,6 +33,12 @@ if (path.includes("index.html")) {
   if (!token) {
     alert("请先登录");
     location.href = "index.html";
+  }
+
+  // ✅ 非 admin 禁止进 admin 页面
+  if (path.includes("admin.html") && !isAdmin) {
+    alert("无权限");
+    location.href = "checkin.html";
   }
 
 }
@@ -59,7 +73,13 @@ async function login() {
 
       alert("登录成功");
 
-      location.href = "checkin.html";
+
+		  // ✅ 根据角色跳转
+		  if (data.user.role === "admin") {
+			location.href = "admin.html";
+		  } else {
+			location.href = "checkin.html";
+		  }
 
     } else {
       alert(data.message || "账号或密码错误");
@@ -144,9 +164,31 @@ function loadStatus() {
     return res.json();
   })
   .then(data => {
+    function loadStatus() {
+
+  // ✅ admin 不执行打卡逻辑
+  if (isAdmin) return;
+
+  const token = localStorage.getItem("token");
+
+  fetch(API + "/api/status", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+
+    if (res.status === 401) {
+      localStorage.clear();
+      location.href = "index.html";
+      return;
+    }
+
+    return res.json();
+  })
+  .then(data => {
     if (!data) return;
 
-    // ✅ 自动跳转
     if (data.status === "not_checked_in" && !path.includes("checkin")) {
       location.href = "checkin.html";
     }
@@ -159,7 +201,6 @@ function loadStatus() {
       location.href = "done.html";
     }
 
-    // ✅ 按钮控制
     const inBtn = document.getElementById("checkInBtn");
     const outBtn = document.getElementById("checkOutBtn");
 
@@ -374,15 +415,20 @@ function exportExcel() {
   });
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
 
   if (path.includes("index.html")) return;
 
-  loadStatus();
   loadUserInfo();
-  loadTodayInRecord();
-  loadTodayRecord();
-  loadAll();  // ✅ 加这一行🔥
+
+  if (isAdmin) {
+    // ✅ admin 只加载表格
+    loadAll();
+  } else {
+    // ✅ staff 才执行打卡逻辑
+    loadStatus();
+    loadTodayInRecord();
+    loadTodayRecord();
+  }
 
 });

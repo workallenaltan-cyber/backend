@@ -64,7 +64,7 @@ router.post("/login", async (req, res) => {
     employeeId = employeeId.trim().toUpperCase();
 
     const result = await pool.query(
-      `SELECT u.employee_id, u.employee_name, u.password, c.company_name
+      `SELECT u.employee_id, u.employee_name, u.password, c.company_name,u.role
        FROM public.users u
        INNER JOIN public.company c 
        ON u.company_code = c.company_code
@@ -102,7 +102,8 @@ router.post("/login", async (req, res) => {
       {
         id: user.employee_id,
         name: user.employee_name,
-        company: user.company_name
+        company: user.company_name,
+		role: user.role
       },
       process.env.JWT_SECRET,
       { expiresIn: "8h" }
@@ -117,7 +118,8 @@ router.post("/login", async (req, res) => {
       user: {
         employeeId: user.employee_id,
         name: user.employee_name,
-        company: user.company_name
+        company: user.company_name,
+		role: user.role
       }
     });
 
