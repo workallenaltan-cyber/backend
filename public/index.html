@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh">
+<script>
+  // ✅ 一进登录页就清除登录状态
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  console.log("已清除登录状态");
+</script>
 <head>
   <meta charset="UTF-8">
   <title>MNL DIGITAL ATTENDANCE</title>
