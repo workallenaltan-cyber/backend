@@ -91,10 +91,6 @@ function redirectByStatus(token) {
 function check() {
 
   const token = getToken();
-  const ip = (req.headers["x-forwarded-for"] || "")
-  .split(",")[0]
-  .trim() || req.socket.remoteAddress;
-  
   if (!token) return;
 
   navigator.geolocation.getCurrentPosition(pos => {
@@ -112,7 +108,6 @@ function check() {
     })
     .then(res => {
 
-      // ❌ token 失效
       if (res.status === 401 || res.status === 403) {
         alert("登录已过期");
         localStorage.clear();
@@ -127,7 +122,6 @@ function check() {
 
       alert(data.msg);
 
-      // 🔥 直接用状态跳转（更快）
       if (data.status === "checkin") {
         location.href = "checkout.html";
       }
@@ -136,9 +130,6 @@ function check() {
         location.href = "done.html";
       }
 
-      if (data.status === "done") {
-        alert("今天已完成打卡");
-      }
     });
 
   }, () => {
