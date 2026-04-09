@@ -1,26 +1,27 @@
-import express from "express";
-import pkg from "pg";
-import cors from "cors";
-import dotenv from "dotenv";
-
-dotenv.config();
-
+// =====================
+// ✅ 引入
+// =====================
 const express = require("express");
+const pkg = require("pg");
 const cors = require("cors");
+require("dotenv").config();
 
+const { Pool } = pkg;
+
+// =====================
+// ✅ 初始化
+// =====================
 const app = express();
 
 app.use(cors({
   origin: "*"
-})); // ⭐ 关键
+}));
+
 app.use(express.json());
 
-const { Pool } = pkg;
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
+// =====================
+// ✅ 数据库
+// =====================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -28,41 +29,49 @@ const pool = new Pool({
   }
 });
 
-// 测试接口
+// =====================
+// ✅ 测试接口
+// =====================
 app.get("/", (req, res) => {
   res.send("API running 🚀");
 });
 
-// 获取所有数据
-app.get("/attendance", async (req, res) => {
-  const result = await pool.query("SELECT * FROM attendance");
-  res.json(result.rows);
+// =====================
+// ✅ 登录路由（重点🔥）
+// =====================
+const { router: authRoutes, authMiddleware } = require("./routes/auth");
+
+// 👉 所有 login 都在这里
+app.use("/api", authRoutes);
+
+// =====================
+// ✅ 受保护接口（测试用）
+// =====================
+app.get("/api/test", authMiddleware, (req, res) => {
+  res.json({
+    message: "成功",
+    user: req.user
+  });
 });
 
-// 插入数据
-app.post("/api/login", async (req, res) => {
+// =====================
+// ✅ 获取考勤（建议加保护）
+// =====================
+app.get("/api/attendance", authMiddleware, async (req, res) => {
   try {
-    const { employeeId, password } = req.body;
-
-    // 👉 示例：直接写死（先跑通）
-    if (employeeId === "MA001" && password === "1234") {
-      return res.json({
-        status: "success",
-        token: "abc123"
-      });
-    }
-
-    return res.json({
-      status: "fail"
-    });
-
+    const result = await pool.query("SELECT * FROM attendance");
+    res.json(result.rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server error" });
   }
 });
 
+// =====================
+// ❗ 启动服务器（只能有一个🔥）
+// =====================
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
