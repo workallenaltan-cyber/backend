@@ -162,8 +162,8 @@ function loadUserInfo() {
   document.getElementById("userInfo").innerHTML = `
   <div style="display:flex; align-items:center; gap:10px;">
     <div>
-      <small><strong>${user.employeeId} - ${user.name} </strong></small>
-      <big>[${user.company}]</big>
+		<h1 style="color: #5a67d8;">${user.company}/h1><br>
+		<big><strong>${user.employeeId} - ${user.name} </strong></big>
     </div>
   </div>
 `;
