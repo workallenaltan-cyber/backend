@@ -81,8 +81,25 @@ function check() {
     .then(data => {
       alert(data.msg);
 
-      // 🔥 只刷新状态，不自己判断
-      loadStatus();
+      // 🔥 打卡后立即检查状态并跳转
+      fetch("/api/status", {
+        headers: {
+          "authorization": localStorage.getItem("token")
+        }
+      })
+      .then(res => res.json())
+      .then(status => {
+
+        if (status.status === "checked_in") {
+          window.location = "checkout.html"; // 👉 上班后去下班页
+        }
+
+        if (status.status === "completed") {
+          window.location = "done.html"; // 👉 完成
+        }
+
+      });
+
     });
 
   }, () => {
