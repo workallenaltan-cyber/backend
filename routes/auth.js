@@ -138,7 +138,4 @@ const authMiddleware = (req, res, next) => {
 // =====================
 // ✅ 导出
 // =====================
-module.exports = {
-  router,
-  authMiddleware
-};
+module.exports = router;
