@@ -9,7 +9,7 @@ router.post("/login", async (req, res) => {
   const { employeeId, password } = req.body;
 
   const user = await pool.query(
-    "SELECT * FROM users WHERE employee_id=$1",
+    "SELECT * FROM public.users inner join public.company on users.company_code= company.company_code WHERE employee_id=$1",
     [employeeId]
   );
 
@@ -37,7 +37,7 @@ router.post("/login", async (req, res) => {
     token,
     user: {
       employeeId: user.rows[0].employee_id,
-      name: user.rows[0].name,
+      name: user.rows[0].employee_name,
       company: user.rows[0].company
     }
   });
