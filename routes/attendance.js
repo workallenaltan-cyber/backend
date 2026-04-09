@@ -77,6 +77,11 @@ router.post("/check", verify, async (req, res) => {
     const employeeId = req.user.id;
     const { lat, lng } = req.body;
 
+    // ✅ 获取 IP（🔥 关键）
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.socket.remoteAddress;
+
     // ❌ 防止空GPS
     if (!lat || !lng) {
       return res.status(400).json({ msg: "GPS missing" });
@@ -95,11 +100,11 @@ router.post("/check", verify, async (req, res) => {
     // =============================
     if (result.rows.length === 0) {
       await pool.query(
-		  `INSERT INTO attendance 
-		  (employee_id, date, check_in_time, check_in_lat, check_in_lng, check_in_ip)
-		  VALUES ($1,$2,$3,$4,$5,$6)`,
-		  [employeeId, today, now, lat, lng, ip]
-		);
+        `INSERT INTO attendance 
+        (employee_id, date, check_in_time, check_in_lat, check_in_lng, check_in_ip)
+        VALUES ($1,$2,$3,$4,$5,$6)`,
+        [employeeId, today, now, lat, lng, ip]
+      );
 
       return res.json({
         status: "checkin",
@@ -114,11 +119,14 @@ router.post("/check", verify, async (req, res) => {
     // =============================
     if (!record.check_out_time) {
       await pool.query(
-	  `UPDATE attendance 
-	   SET check_out_time=$1, check_out_lat=$2, check_out_lng=$3, check_out_ip=$4
-	   WHERE id=$5`,
-	  [now, lat, lng, ip, record.id]
-	);
+        `UPDATE attendance 
+         SET check_out_time=$1,
+             check_out_lat=$2,
+             check_out_lng=$3,
+             check_out_ip=$4
+         WHERE id=$5`,
+        [now, lat, lng, ip, record.id]
+      );
 
       return res.json({
         status: "checkout",
