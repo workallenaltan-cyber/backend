@@ -130,7 +130,7 @@ function loadStatus() {
     if (data.status === "completed") {
       inBtn.style.display = "none";
       outBtn.style.display = "none";
-      alert("今天已完成打卡");
+      //alert("今天已完成打卡");
     }
 
   });
