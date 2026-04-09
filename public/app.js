@@ -18,14 +18,31 @@ function login() {
     console.log("返回:", data);
 
     if (data.status === "success") {
-	  alert("登录成功");
-
 	  localStorage.setItem("token", data.token);
-
-	  // ✅ 一定要加这个
 	  localStorage.setItem("user", JSON.stringify(data.user));
 
-	  window.location = "dashboard.html";
+	  // 🔥 登录后先检查状态
+	  fetch("/api/status", {
+		headers: {
+		  "authorization": data.token
+		}
+	  })
+	  .then(res => res.json())
+	  .then(status => {
+
+		if (status.status === "not_checked_in") {
+		  window.location = "checkin.html";
+		}
+
+		if (status.status === "checked_in") {
+		  window.location = "checkout.html";
+		}
+
+		if (status.status === "completed") {
+		  window.location = "done.html";
+		}
+
+	  });
 	} else {
       alert("登录失败");
     }
