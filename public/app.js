@@ -77,7 +77,18 @@ function check() {
         lng: pos.coords.longitude
       })
     })
-    .then(res => res.json())
+    .then(res => .then(res => {
+
+      // 🔥 后端验证失败
+      if (res.status === 401 || res.status === 403) {
+        alert("登录已过期，请重新登录");
+        localStorage.clear();
+        window.location = "index.html";
+        return;
+      }
+
+      return res.json();
+    })
     .then(data => {
       alert(data.msg);
 
@@ -189,3 +200,16 @@ document.addEventListener("DOMContentLoaded", () => {
   loadStatus();
   loadUserInfo(); // 🔥 加这个
 });
+
+function checkToken() {
+  const token = localStorage.getItem("token");
+
+  // ❌ 没 token
+  if (!token) {
+    alert("请先登录");
+    window.location = "index.html";
+    return null;
+  }
+
+  return token;
+}

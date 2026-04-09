@@ -10,14 +10,40 @@ const ExcelJS = require("exceljs");
 function verify(req, res, next) {
   const token = req.headers["authorization"];
 
-  if (!token) return res.sendStatus(403);
+  // ❌ 没 token
+  if (!token) {
+    return res.status(403).json({ msg: "No token" });
+  }
 
+  // ❌ token 错误 / 过期
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(401);
+    if (err) {
+      return res.status(401).json({ msg: "Invalid token" });
+    }
+
     req.user = user;
     next();
   });
 }
+
+// =====================
+// ✅ 获取状态
+// =====================
+router.get("/status", verify, async (req, res) => {
+  const employeeId = req.user.id;
+
+  res.json({ status: "ok", user: employeeId });
+});
+
+// =====================
+// ✅ 打卡（必须验证）
+// =====================
+router.post("/check", verify, async (req, res) => {
+  const employeeId = req.user.id;
+
+  res.json({ msg: "打卡成功", user: employeeId });
+});
+
 
 // =============================
 // ✅ 获取马来西亚时间
