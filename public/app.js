@@ -144,7 +144,7 @@ function loadUserInfo() {
   if (!user) return;
 
   document.getElementById("userInfo").innerText =
-    `Name: ${user.name} | ID: ${user.employeeId} | PUSAT: ${user.company}`;
+    `<p>Name: ${user.name} | ID: ${user.employeeId} | PUSAT: ${user.company}</p>`;
 }
 document.addEventListener("DOMContentLoaded", () => {
   loadStatus();

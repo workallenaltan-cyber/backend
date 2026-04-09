@@ -38,11 +38,9 @@ router.post("/login", async (req, res) => {
     user: {
       employeeId: user.rows[0].employee_id,
       name: user.rows[0].employee_name,
-      company: user.rows[0].company
+      company: user.rows[0].company_name
     }
   });
 });
-
-module.exports = router;
 
 module.exports = router;
