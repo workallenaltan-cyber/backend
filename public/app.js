@@ -189,16 +189,3 @@ document.addEventListener("DOMContentLoaded", () => {
   loadStatus();
   loadUserInfo(); // 🔥 加这个
 });
-
-function checkToken() {
-  const token = localStorage.getItem("token");
-
-  // ❌ 没 token
-  if (!token) {
-    alert("请先登录");
-    window.location = "index.html";
-    return null;
-  }
-
-  return token;
-}
