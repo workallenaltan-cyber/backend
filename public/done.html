@@ -1,20 +1,39 @@
 <script>
 const token = localStorage.getItem("token");
 
-console.log("CHECK TOKEN:", token);
-
 if (!token) {
   window.location.href = "login.html";
 }
 
-fetch("/api/attendance", {
+// ✅ 只保留 status 控制跳转
+fetch("/api/status", {
   headers: {
-    "Authorization": "Bearer " + localStorage.getItem("token")
+    "Authorization": "Bearer " + token
   }
 })
 .then(res => res.json())
-.then(data => {
-  console.log(data);
+.then(status => {
+
+  console.log("STATUS:", status);
+
+  if (status.status === "not_checked_in") {
+    if (!location.pathname.includes("checkin")) {
+      window.location.href = "checkin.html";
+    }
+  }
+
+  else if (status.status === "checked_in") {
+    if (!location.pathname.includes("checkout")) {
+      window.location.href = "checkout.html";
+    }
+  }
+
+  else if (status.status === "completed") {
+    if (!location.pathname.includes("done")) {
+      window.location.href = "done.html";
+    }
+  }
+
 });
 
 function loadTodayRecord() {
