@@ -6,13 +6,54 @@ const bcrypt = require("bcryptjs");
 
 
 // =====================
+// ✅ Token Middleware（统一🔥）
+// =====================
+const authMiddleware = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({
+        status: "fail",
+        message: "未登录"
+      });
+    }
+
+    const parts = authHeader.split(" ");
+
+    if (parts.length !== 2 || parts[0] !== "Bearer") {
+      return res.status(401).json({
+        status: "fail",
+        message: "token 格式错误"
+      });
+    }
+
+    const token = parts[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.user = decoded;
+
+    next();
+
+  } catch (err) {
+    console.error("❌ TOKEN ERROR:", err.message);
+
+    return res.status(401).json({
+      status: "fail",
+      message: "token 无效或已过期"
+    });
+  }
+};
+
+
+// =====================
 // ✅ 登录 API（最终版🔥）
 // =====================
 router.post("/login", async (req, res) => {
   try {
     let { employeeId, password } = req.body;
 
-    // ✅ 参数检查
     if (!employeeId || !password) {
       return res.status(400).json({
         status: "fail",
@@ -20,10 +61,8 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // ✅ 统一大写（防手机输入问题🔥）
     employeeId = employeeId.trim().toUpperCase();
 
-    // ✅ 查询用户
     const result = await pool.query(
       `SELECT u.employee_id, u.employee_name, u.password, c.company_name
        FROM public.users u
@@ -42,7 +81,6 @@ router.post("/login", async (req, res) => {
 
     const user = result.rows[0];
 
-    // ✅ 验证密码
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
@@ -52,7 +90,6 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // ✅ 检查 JWT_SECRET
     if (!process.env.JWT_SECRET) {
       console.error("❌ JWT_SECRET 未设置");
       return res.status(500).json({
@@ -61,7 +98,6 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // ✅ 生成 token
     const token = jwt.sign(
       {
         id: user.employee_id,
@@ -74,9 +110,9 @@ router.post("/login", async (req, res) => {
 
     console.log("✅ 登录成功:", user.employee_id);
 
-    // ✅ 返回
     res.json({
       status: "success",
+      message: "登录成功",
       token,
       user: {
         employeeId: user.employee_id,
@@ -96,49 +132,20 @@ router.post("/login", async (req, res) => {
 
 
 // =====================
-// ✅ 获取当前用户（调试用🔥）
+// ✅ 获取当前用户（用 middleware🔥）
 // =====================
-router.get("/me", (req, res) => {
-  try {
-    const authHeader = req.headers.authorization || req.headers.Authorization;
-
-    if (!authHeader) {
-      return res.status(401).json({
-        status: "fail",
-        message: "未登录"
-      });
-    }
-
-    // ✅ 防止 split 报错
-    const parts = authHeader.split(" ");
-
-    if (parts.length !== 2 || parts[0] !== "Bearer") {
-      return res.status(401).json({
-        status: "fail",
-        message: "token 格式错误"
-      });
-    }
-
-    const token = parts[1];
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    res.json({
-      status: "success",
-      user: decoded
-    });
-
-  } catch (err) {
-    console.error("❌ TOKEN ERROR:", err.message);
-    res.status(401).json({
-      status: "fail",
-      message: "token 无效或已过期"
-    });
-  }
+router.get("/me", authMiddleware, (req, res) => {
+  res.json({
+    status: "success",
+    user: req.user
+  });
 });
 
 
 // =====================
 // ✅ 导出
 // =====================
-module.exports = router;
+module.exports = {
+  router,
+  authMiddleware
+};

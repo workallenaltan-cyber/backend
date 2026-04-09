@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -35,14 +34,6 @@
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .left h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
     }
 
     .right {
@@ -56,31 +47,20 @@
       margin-bottom: 15px;
       border-radius: 8px;
       border: 1px solid #ddd;
-      font-size: 14px;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      border: none;
       background: #667eea;
       color: white;
-      font-size: 16px;
+      border: none;
       border-radius: 8px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #5a67d8;
     }
 
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-      .left {
-        display: none;
-      }
+      .container { flex-direction: column; }
+      .left { display: none; }
     }
   </style>
 </head>
@@ -97,18 +77,16 @@
   <div class="right">
     <h2>LOGIN</h2>
 
-    <input type="text" id="id" placeholder="STAFFID" style="text-transform: uppercase;">
+    <input type="text" id="id" placeholder="STAFFID">
     <input type="password" id="pw" placeholder="PASSWORD">
 
     <button onclick="login()">LOGIN</button>
-
-    <div class="footer">
-      © 2026 MNL DIGITAL ATTENDANCE SYSTEM
-    </div>
   </div>
 
 </div>
 
+<!-- ✅ 引入 JS -->
 <script src="/app.js"></script>
+
 </body>
 </html>
