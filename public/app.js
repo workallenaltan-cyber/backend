@@ -158,7 +158,7 @@ function loadUserInfo() {
       ${user.name.charAt(0)}
     </div>
     <div>
-      <small><strong>${user.employeeId} "-" ${user.name}</strong></small><br>
+      <small><strong>${user.employeeId} - ${user.name}</strong></small><br>
       <small>${user.company}</small>
     </div>
   </div>
