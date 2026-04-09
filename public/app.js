@@ -16,36 +16,49 @@ function getToken() {
 // =====================
 // ✅ 登录
 // =====================
-function login() {
-  const employeeId = document.getElementById("id").value.toUpperCase();
+async function login() {
+  const employeeId = document.getElementById("id").value.trim().toUpperCase();
   const password = document.getElementById("pw").value;
 
-  fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ employeeId, password })
-  })
-  .then(res => res.json())
-  .then(data => {
+  if (!employeeId || !password) {
+    alert("请输入账号和密码");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ employeeId, password })
+    });
+
+    const data = await res.json();
+
+    console.log("LOGIN RESPONSE:", data);
 
     if (data.status === "success") {
 
+      // ✅ 存 token（关键🔥）
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
 
-      // 🔥 登录后直接跳正确页面
-      redirectByStatus(data.token);
+      alert("登录成功");
+
+      // ✅ 跳转
+      window.location.href = "checkin.html";
 
     } else {
-      alert("登录失败");
+      alert("账号或密码错误");
     }
-  })
-  .catch(() => {
+
+  } catch (err) {
+    console.error(err);
     alert("服务器错误");
-  });
+  }
 }
+
+
 
 // =====================
 // ✅ 根据状态跳转（复用🔥）
