@@ -4,7 +4,7 @@ const token = localStorage.getItem("token");
 console.log("CHECK TOKEN:", token);
 
 if (!token) {
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
 
 fetch("/api/attendance", {
