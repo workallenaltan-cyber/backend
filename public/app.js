@@ -193,6 +193,46 @@ function loadUserInfo() {
 
 
 // =====================
+// ✅ 今日上班信息（新增🔥）
+// =====================
+function loadTodayInRecord() {
+
+  const token = localStorage.getItem("token");
+
+  fetch(API + "/api/my-today", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    const el = document.getElementById("todayInInfo");
+    if (!el) return;
+
+    // ❌ 没打卡
+    if (data.status === "empty") {
+      el.innerHTML = `<p style="color:red;">今天还没打卡</p>`;
+      return;
+    }
+
+    // ❌ 错误
+    if (data.status !== "success") {
+      el.innerHTML = `<p style="color:red;">加载失败</p>`;
+      return;
+    }
+
+    // ✅ 正常显示
+    el.innerHTML = `
+      <div style="margin-top:15px;">
+        <p><strong>📅 日期:</strong> ${data.adate}</p>
+        <p><strong>🕒 上班:</strong> ${data.check_in_time}</p>
+      </div>
+    `;
+  });
+}
+
+// =====================
 // ✅ 今日打卡信息（新增🔥）
 // =====================
 function loadTodayRecord() {
@@ -227,7 +267,7 @@ function loadTodayRecord() {
       <div style="margin-top:15px;">
         <p><strong>📅 日期:</strong> ${data.adate}</p>
         <p><strong>🕒 上班:</strong> ${data.check_in_time}</p>
-        <p><strong>🕕 下班:</strong> ${data.check_out_time || "-"}</p>
+		<p><strong>🕒 下班:</strong> ${data.check_out_time}</p>
       </div>
     `;
   });
@@ -239,6 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadStatus();
   loadUserInfo();
-  loadTodayRecord(); // ✅ 加这一行🔥
+  loadTodayInRecord();
+  loadTodayRecord();  // ✅ 加这一行🔥
 
 });
