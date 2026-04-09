@@ -39,11 +39,8 @@ app.get("/", (req, res) => {
 // =====================
 // ✅ 登录路由（重点🔥）
 // =====================
-const { router: authRoutes, authMiddleware } = require("./routes/auth");
-
-// 👉 所有 login 都在这里
+const authRoutes = require("./routes/auth");
 app.use("/api", authRoutes);
-
 // =====================
 // ✅ 受保护接口（测试用）
 // =====================
