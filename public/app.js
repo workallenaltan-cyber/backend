@@ -186,20 +186,47 @@ function loadUserInfo() {
       <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
         ${user.company}
       </h2>
-      <p><strong>ID: ${user.employeeId}</strong></p>
-      <p><strong>Name: ${user.name}</strong></p>
+      <p><strong>${user.employeeId} - ${user.name}</strong></p>
     </div>
   `;
 }
 
+
 // =====================
-// ✅ 页面初始化
+// ✅ 今日打卡信息（新增🔥）
 // =====================
+function loadTodayRecord() {
+
+  const token = localStorage.getItem("token");
+
+  fetch(API + "/api/my-today", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    if (!data || !data.check_in_time) return;
+
+    const el = document.getElementById("todayInfo");
+    if (!el) return;
+
+    el.innerHTML = `
+      <div style="margin-top:15px;">
+        <p><strong>📅 日期:</strong> ${data.adate}</p>
+        <p><strong>🕒 上班时间:</strong> ${data.check_in_time}</p>
+      </div>
+    `;
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
   if (path.includes("index.html")) return;
 
   loadStatus();
   loadUserInfo();
+  loadTodayRecord(); // ✅ 加这一行🔥
 
 });
