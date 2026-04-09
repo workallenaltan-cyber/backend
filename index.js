@@ -41,6 +41,12 @@ app.get("/", (req, res) => {
 // =====================
 const authRoutes = require("./routes/auth");
 app.use("/api", authRoutes);
+
+// =====================
+// ✅ 引入 token 验证（你缺这个🔥）
+// =====================
+const authMiddleware = require("./middleware/auth");
+
 // =====================
 // ✅ 受保护接口（测试用）
 // =====================
@@ -52,7 +58,7 @@ app.get("/api/test", authMiddleware, (req, res) => {
 });
 
 // =====================
-// ✅ 获取考勤（建议加保护）
+// ✅ 获取考勤（必须带 token🔥）
 // =====================
 app.get("/api/attendance", authMiddleware, async (req, res) => {
   try {

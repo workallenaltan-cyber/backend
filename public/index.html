@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <title>MNL DIGITAL ATTENDANCE</title>
 
-  <!-- 手机适配 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 
   <style>
@@ -31,7 +29,6 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
-    /* 左边 */
     .left {
       flex: 1;
       background: linear-gradient(135deg, #667eea, #764ba2);
@@ -47,18 +44,9 @@
       margin-bottom: 10px;
     }
 
-    .left p {
-      opacity: 0.8;
-    }
-
-    /* 右边 */
     .right {
       flex: 1;
       padding: 40px;
-    }
-
-    h2 {
-      margin-bottom: 20px;
     }
 
     input {
@@ -85,19 +73,10 @@
       background: #5a67d8;
     }
 
-    .footer {
-      margin-top: 10px;
-      font-size: 12px;
-      text-align: center;
-      color: #888;
-    }
-
-    /* 手机版 */
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
       }
-
       .left {
         display: none;
       }
@@ -109,13 +88,11 @@
 
 <div class="container">
 
-  <!-- 左边 -->
   <div class="left">
     <h1>MNL DIGITAL ATTENDANCE SYSTEM</h1>
     <p>PUSAT TIMBANG</p>
   </div>
 
-  <!-- 右边 -->
   <div class="right">
     <h2>LOGIN</h2>
 
@@ -131,7 +108,49 @@
 
 </div>
 
-<script src="/app.js"></script>
+<script>
+async function login() {
+  const employeeId = document.getElementById("id").value.trim().toUpperCase();
+  const password = document.getElementById("pw").value;
+
+  if (!employeeId || !password) {
+    alert("请输入账号和密码");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ employeeId, password })
+    });
+
+    const data = await res.json();
+
+    console.log("LOGIN RESPONSE:", data);
+
+    if (data.status === "success") {
+
+      // ✅ 关键：存 token
+      localStorage.setItem("token", data.token);
+
+      alert("登录成功");
+
+      // ✅ 跳转主页面
+      window.location.href = "index.html";
+
+    } else {
+      alert("账号或密码错误");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("服务器错误");
+  }
+}
+</script>
 
 </body>
 </html>
