@@ -5,22 +5,29 @@ const jwt = require("jsonwebtoken");
 const ExcelJS = require("exceljs");
 
 // =============================
-// ✅ Token 验证
+// ✅ Token 验证（升级版🔥）
 // =============================
 function verify(req, res, next) {
   const token = req.headers["authorization"];
 
-  if (!token) return res.sendStatus(403);
+  // ❌ 没 token
+  if (!token) {
+    return res.status(403).json({ msg: "No token" });
+  }
 
+  // ❌ token 无效
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(401);
+    if (err) {
+      return res.status(401).json({ msg: "Invalid token" });
+    }
+
     req.user = user;
     next();
   });
 }
 
 // =============================
-// ✅ 获取马来西亚时间
+// ✅ 马来西亚时间
 // =============================
 function getMalaysiaTime() {
   const now = new Date();
@@ -29,15 +36,12 @@ function getMalaysiaTime() {
   );
 }
 
-// =============================
-// ✅ 获取今天日期 YYYY-MM-DD
-// =============================
 function getToday() {
   return getMalaysiaTime().toISOString().split("T")[0];
 }
 
 // =============================
-// ✅ 获取状态（控制按钮）
+// ✅ 获取状态（必须登录🔥）
 // =============================
 router.get("/status", verify, async (req, res) => {
   try {
@@ -53,9 +57,7 @@ router.get("/status", verify, async (req, res) => {
       return res.json({ status: "not_checked_in" });
     }
 
-    const record = result.rows[0];
-
-    if (!record.check_out_time) {
+    if (!result.rows[0].check_out_time) {
       return res.json({ status: "checked_in" });
     }
 
@@ -68,12 +70,17 @@ router.get("/status", verify, async (req, res) => {
 });
 
 // =============================
-// ✅ 打卡（自动判断上下班）
+// ✅ 打卡（企业安全版🔥🔥🔥）
 // =============================
 router.post("/check", verify, async (req, res) => {
   try {
     const employeeId = req.user.id;
     const { lat, lng } = req.body;
+
+    // ❌ 防止空GPS
+    if (!lat || !lng) {
+      return res.status(400).json({ msg: "GPS missing" });
+    }
 
     const now = getMalaysiaTime();
     const today = getToday();
@@ -83,7 +90,9 @@ router.post("/check", verify, async (req, res) => {
       [employeeId, today]
     );
 
+    // =============================
     // ✅ 上班打卡
+    // =============================
     if (result.rows.length === 0) {
       await pool.query(
         `INSERT INTO attendance 
@@ -92,13 +101,17 @@ router.post("/check", verify, async (req, res) => {
         [employeeId, today, now, lat, lng]
       );
 
-      return res.json({ msg: "上班打卡成功" });
-	  window.location = "checkout.html";
+      return res.json({
+        status: "checkin",
+        msg: "上班打卡成功"
+      });
     }
 
     const record = result.rows[0];
 
+    // =============================
     // ✅ 下班打卡
+    // =============================
     if (!record.check_out_time) {
       await pool.query(
         `UPDATE attendance 
@@ -107,12 +120,19 @@ router.post("/check", verify, async (req, res) => {
         [now, lat, lng, record.id]
       );
 
-      return res.json({ msg: "下班打卡成功" });
-	  window.location = "done.html";
+      return res.json({
+        status: "checkout",
+        msg: "下班打卡成功"
+      });
     }
 
+    // =============================
     // ✅ 已完成
-    return res.json({ msg: "今天已完成打卡" });
+    // =============================
+    return res.json({
+      status: "done",
+      msg: "今天已完成打卡"
+    });
 
   } catch (err) {
     console.error(err);
@@ -121,9 +141,9 @@ router.post("/check", verify, async (req, res) => {
 });
 
 // =============================
-// ✅ 获取全部记录（管理员）
+// ✅ 获取全部记录（建议加验证🔥）
 // =============================
-router.get("/all", async (req, res) => {
+router.get("/all", verify, async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT 
@@ -152,9 +172,9 @@ router.get("/all", async (req, res) => {
 });
 
 // =============================
-// ✅ 导出 Excel
+// ✅ 导出 Excel（建议加验证🔥）
 // =============================
-router.get("/export", async (req, res) => {
+router.get("/export", verify, async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT 
