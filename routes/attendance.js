@@ -93,6 +93,7 @@ router.post("/check", verify, async (req, res) => {
       );
 
       return res.json({ msg: "上班打卡成功" });
+	  window.location = "checkout.html";
     }
 
     const record = result.rows[0];
@@ -107,6 +108,7 @@ router.post("/check", verify, async (req, res) => {
       );
 
       return res.json({ msg: "下班打卡成功" });
+	  window.location = "done.html";
     }
 
     // ✅ 已完成
