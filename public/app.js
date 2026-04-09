@@ -1,3 +1,6 @@
+// =====================
+// ✅ 用户信息
+// =====================
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const role = user.role;
 const isAdmin = role === "admin";
@@ -11,13 +14,11 @@ const API = "https://backend-z9ir.onrender.com";
 // ✅ 当前页面路径 + token
 // =====================
 const path = window.location.pathname;
-let token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
 // =====================
-// ✅ 页面控制（你要的🔥）
+// ✅ 页面控制
 // =====================
-
-// 👉 登录页
 if (path.includes("index.html")) {
 
   if (token) {
@@ -35,12 +36,11 @@ if (path.includes("index.html")) {
     location.href = "index.html";
   }
 
-  // ✅ 非 admin 禁止进 admin 页面
+  // ✅ 非 admin 禁止进 admin
   if (path.includes("admin.html") && !isAdmin) {
     alert("无权限");
     location.href = "checkin.html";
   }
-
 }
 
 // =====================
@@ -67,19 +67,16 @@ async function login() {
     const data = await res.json();
 
     if (data.status === "success") {
-
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       alert("登录成功");
 
-
-		  // ✅ 根据角色跳转
-		  if (data.user.role === "admin") {
-			location.href = "admin.html";
-		  } else {
-			location.href = "checkin.html";
-		  }
+      if (data.user.role === "admin") {
+        location.href = "admin.html";
+      } else {
+        location.href = "checkin.html";
+      }
 
     } else {
       alert(data.message || "账号或密码错误");
@@ -96,8 +93,6 @@ async function login() {
 // =====================
 function check() {
 
-  const token = localStorage.getItem("token");
-
   navigator.geolocation.getCurrentPosition(pos => {
 
     fetch(API + "/api/check", {
@@ -112,13 +107,11 @@ function check() {
       })
     })
     .then(res => {
-
       if (res.status === 401) {
         localStorage.clear();
         location.href = "index.html";
         return;
       }
-
       return res.json();
     })
     .then(data => {
@@ -133,7 +126,6 @@ function check() {
       if (data.status === "checkout") {
         location.href = "done.html";
       }
-
     });
 
   }, () => {
@@ -142,34 +134,11 @@ function check() {
 }
 
 // =====================
-// ✅ 状态控制 + 自动跳转
+// ✅ 状态控制（修正版🔥）
 // =====================
 function loadStatus() {
 
-  const token = localStorage.getItem("token");
-
-  fetch(API + "/api/status", {
-    headers: {
-      "Authorization": "Bearer " + token
-    }
-  })
-  .then(res => {
-
-    if (res.status === 401) {
-      localStorage.clear();
-      location.href = "index.html";
-      return;
-    }
-
-    return res.json();
-  })
-  .then(data => {
-    function loadStatus() {
-
-  // ✅ admin 不执行打卡逻辑
-  if (isAdmin) return;
-
-  const token = localStorage.getItem("token");
+  if (isAdmin) return; // ✅ admin 不执行
 
   fetch(API + "/api/status", {
     headers: {
@@ -210,14 +179,9 @@ function loadStatus() {
 }
 
 // =====================
-// ✅ 显示用户信息（重点🔥🔥🔥）
+// ✅ 用户信息
 // =====================
 function loadUserInfo() {
-
-  const userStr = localStorage.getItem("user");
-  if (!userStr) return;
-
-  const user = JSON.parse(userStr);
 
   const el = document.getElementById("userInfo");
   if (!el) return;
@@ -225,60 +189,17 @@ function loadUserInfo() {
   el.innerHTML = `
     <div style="text-align:center;">
       <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
-        ${user.company}
+        ${user.company || ""}
       </h2>
-      <p><strong>${user.employeeId} - ${user.name}</strong></p>
+      <p><strong>${user.employeeId || ""} - ${user.name || ""}</strong></p>
     </div>
   `;
 }
 
-
 // =====================
-// ✅ 今日上班信息（新增🔥）
-// =====================
-function loadTodayInRecord() {
-
-  const token = localStorage.getItem("token");
-
-  fetch(API + "/api/my-today", {
-    headers: {
-      "Authorization": "Bearer " + token
-    }
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    const el = document.getElementById("todayInInfo");
-    if (!el) return;
-
-    // ❌ 没打卡
-    if (data.status === "empty") {
-      el.innerHTML = `<p style="color:red;">今天还没打卡</p>`;
-      return;
-    }
-
-    // ❌ 错误
-    if (data.status !== "success") {
-      el.innerHTML = `<p style="color:red;">加载失败</p>`;
-      return;
-    }
-
-    // ✅ 正常显示
-    el.innerHTML = `
-      <div style="margin-top:15px;">
-        <p><strong>📅 日期:</strong> ${data.adate}</p>
-        <p><strong>🕒 上班:</strong> ${data.check_in_time}</p>
-      </div>
-    `;
-  });
-}
-
-// =====================
-// ✅ 今日打卡信息（新增🔥）
+// ✅ 今日记录
 // =====================
 function loadTodayRecord() {
-
-  const token = localStorage.getItem("token");
 
   fetch(API + "/api/my-today", {
     headers: {
@@ -291,55 +212,35 @@ function loadTodayRecord() {
     const el = document.getElementById("todayInfo");
     if (!el) return;
 
-    // ❌ 没打卡
     if (data.status === "empty") {
       el.innerHTML = `<p style="color:red;">今天还没打卡</p>`;
       return;
     }
 
-    // ❌ 错误
     if (data.status !== "success") {
       el.innerHTML = `<p style="color:red;">加载失败</p>`;
       return;
     }
 
-    // ✅ 正常显示
     el.innerHTML = `
-      <div style="margin-top:15px;">
-        <p><strong>📅 日期:</strong> ${data.adate}</p>
-        <p><strong>🕒 上班:</strong> ${data.check_in_time}</p>
-		<p><strong>🕒 下班:</strong> ${data.check_out_time}</p>
-      </div>
+      <p>📅 ${data.adate}</p>
+      <p>🕒 上班: ${data.check_in_time}</p>
+      <p>🕒 下班: ${data.check_out_time || "-"}</p>
     `;
   });
 }
 
-/* =========================
-   ✅ 加载数据
-========================= */
 // =====================
-// ✅ 加载全部记录（管理员🔥）
+// ✅ 管理员加载全部
 // =====================
 function loadAll() {
-
-  const token = localStorage.getItem("token");
-  if (!token) return;
 
   fetch(API + "/api/all", {
     headers: {
       "Authorization": "Bearer " + token
     }
   })
-  .then(res => {
-
-    if (res.status === 401) {
-      localStorage.clear();
-      location.href = "index.html";
-      return;
-    }
-
-    return res.json();
-  })
+  .then(res => res.json())
   .then(data => {
 
     const table = document.getElementById("tableBody");
@@ -349,14 +250,8 @@ function loadAll() {
 
     data.forEach(row => {
 
-      // ✅ 状态判断（加分🔥）
-      let status = "正常";
-      let className = "on-time";
-
-      if (!row.check_out_time) {
-        status = "未下班";
-        className = "late";
-      }
+      let status = row.check_out_time ? "正常" : "未下班";
+      let cls = row.check_out_time ? "on-time" : "late";
 
       table.innerHTML += `
         <tr>
@@ -370,43 +265,28 @@ function loadAll() {
           <td>${row.check_out_lat || "-"}, ${row.check_out_lng || "-"}</td>
           <td>${row.check_in_ip}</td>
           <td>${row.check_out_ip || "-"}</td>
-          <td><span class="badge ${className}">${status}</span></td>
+          <td><span class="badge ${cls}">${status}</span></td>
         </tr>
       `;
     });
 
-    // ❌ 没数据
     if (data.length === 0) {
       table.innerHTML = `<tr><td colspan="11">暂无数据</td></tr>`;
     }
-
-  })
-  .catch(err => {
-    console.error(err);
-    document.getElementById("tableBody").innerHTML =
-      `<tr><td colspan="11">加载失败</td></tr>`;
   });
 }
 
-/* =========================
-   ✅ 导出 Excel（带 token）
-========================= */
+// =====================
+// ✅ 导出 Excel（修正🔥）
+// =====================
 function exportExcel() {
-  fetch("/api/export", {
-    headers: { "Authorization": "Bearer " + token }
-  })
-  .then(res => {
-    if (res.status === 401 || res.status === 403) {
-      alert("登录已过期");
-      localStorage.clear();
-      location.href = "index.html";
-      return;
+  fetch(API + "/api/export", {
+    headers: {
+      "Authorization": "Bearer " + token
     }
-    return res.blob();
   })
+  .then(res => res.blob())
   .then(blob => {
-    if (!blob) return;
-
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -415,6 +295,9 @@ function exportExcel() {
   });
 }
 
+// =====================
+// ✅ 页面初始化
+// =====================
 document.addEventListener("DOMContentLoaded", () => {
 
   if (path.includes("index.html")) return;
@@ -422,13 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUserInfo();
 
   if (isAdmin) {
-    // ✅ admin 只加载表格
-    loadAll();
+    loadAll();   // ✅ admin
   } else {
-    // ✅ staff 才执行打卡逻辑
-    loadStatus();
-    loadTodayInRecord();
-    loadTodayRecord();
+    loadStatus(); 
+    loadTodayRecord(); // ✅ staff
   }
-
 });
