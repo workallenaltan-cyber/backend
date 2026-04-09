@@ -41,7 +41,7 @@ fetch("/api/status", {
     }
 
     /* 左边 */
-    .left {
+    .center {
       flex: 1;
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
@@ -144,9 +144,18 @@ fetch("/api/status", {
 <body onload="loadStatus();loadUserInfo();">
 <div id="userInfo" class="user-box"></div>
 
-<h1>CHECK IN</h1><br>
+<div class="container">
 
-<button id="checkInBtn" onclick="check()">CHECK IN</button>
+  <!-- 左边 -->
+  <div class="center">
+    <h1>CHECK IN</h1><br>
+	<button id="checkInBtn" onclick="check()">CHECK IN</button>
+  </div>
+
+</div>
+
+
+
 
 <script src="/app.js"></script>
 </body>
