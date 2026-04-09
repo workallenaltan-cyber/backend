@@ -181,9 +181,6 @@ function loadStatus() {
 // =====================
 function loadUserInfo() {
   const user = JSON.parse(localStorage.getItem("user"));
-
-  console.log("USER:", user); // 调试
-
   if (!user) return;
 
   const el = document.getElementById("userInfo");
@@ -191,16 +188,9 @@ function loadUserInfo() {
 
   el.innerHTML = `
     <div style="text-align:center;">
-      <h2 style="
-        background:#5a67d8;
-        color:white;
-        padding:10px;
-        border-radius:10px;
-        margin-bottom:10px;
-      ">
+      <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
         ${user.company}
       </h2>
-
       <p><strong>${user.employeeId} - ${user.name}</strong></p>
     </div>
   `;
