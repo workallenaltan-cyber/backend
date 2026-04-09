@@ -97,6 +97,13 @@ async function login() {
 function check() {
 
   const token = localStorage.getItem("token");
+  const btn = document.getElementById("checkBtn"); // 👈 按钮ID
+
+  // ✅ 按钮进入 processing 状态
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "Processing...";
+  }
 
   navigator.geolocation.getCurrentPosition(pos => {
 
@@ -126,6 +133,7 @@ function check() {
 
       alert(data.msg);
 
+      // ✅ 跳转
       if (data.status === "checkin") {
         location.href = "checkout.html";
       }
@@ -134,10 +142,30 @@ function check() {
         location.href = "done.html";
       }
 
+      if (data.status === "done") {
+        location.href = "done.html";
+      }
+
+    })
+    .catch(err => {
+      console.error(err);
+      alert("打卡失败");
+
+      // ❌ 出错恢复按钮
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "点击打卡";
+      }
     });
 
   }, () => {
     alert("无法获取GPS");
+
+    // ❌ GPS失败恢复按钮
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = "点击打卡";
+    }
   });
 }
 
