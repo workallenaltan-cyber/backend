@@ -242,4 +242,37 @@ router.get("/export", verify, async (req, res) => {
 });
 
 // =============================
+// ✅ 获取今天个人记录
+// =============================
+router.get("/my-today", verify, async (req, res) => {
+  try {
+    const employeeId = req.user.id;
+
+    const today = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kuala_Lumpur"
+    });
+
+    const result = await pool.query(
+      `SELECT 
+        TO_CHAR(check_in_time, 'HH24:MI:SS') AS check_in_time,
+        TO_CHAR(check_out_time, 'HH24:MI:SS') AS check_out_time,
+        TO_CHAR(date, 'DD/MM/YYYY') AS adate
+       FROM attendance
+       WHERE employee_id=$1 AND date=$2`,
+      [employeeId, today]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({});
+    }
+
+    res.json(result.rows[0]);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "error" });
+  }
+});
+
+// =============================
 module.exports = router;

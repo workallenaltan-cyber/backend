@@ -12,8 +12,29 @@ fetch("/api/status", {
   if (status.status === "completed" && location.pathname.includes("done")) return;
 
   // ❌ 状态不匹配 → 重定向
-  location.href = "dashboard.html";
+  location.href = "index.html";
 });
+
+function loadTodayRecord() {
+  fetch("/api/my-today", {
+    headers: {
+      "authorization": localStorage.getItem("token")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("今日记录:", data);
+
+    document.getElementById("checkInTime").innerText =
+      data.check_in_time || "";
+
+    document.getElementById("checkOutTime").innerText =
+      data.check_out_time || "";
+
+    document.getElementById("date").innerText =
+      data.adate || "";
+  });
+}
 </script>
 
 
@@ -171,7 +192,7 @@ button:hover {
   }
 }
 </style>
-<body onload="loadStatus();loadUserInfo();">
+<body onload="loadTodayRecord(); loadUserInfo();">
 
 <div class="container">
 
@@ -180,8 +201,9 @@ button:hover {
 	<div id="userInfo" style="margin-bottom: 20px;"></div>
 		<div style="display:flex; align-items:center; gap:10px;margin-bottom: 20px;">
 			<div>
-				<p>Check Out:</p><br>
-				<p>Check In:</p><br>
+				<p id="date"></p>
+				<p>Check In: <span id="checkInTime"></span></p>
+				<p>Check Out: <span id="checkOutTime"></span></p>
 				<big><strong>Have A Nice Day. </strong></big>
 			</div>
 		</div>
