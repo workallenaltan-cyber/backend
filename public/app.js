@@ -1,4 +1,10 @@
 // =====================
+// ✅ API 地址（重要🔥）
+// =====================
+const API = "https://backend-z9ir.onrender.com";
+
+
+// =====================
 // ✅ 通用：检查 token
 // =====================
 function getToken() {
@@ -13,6 +19,7 @@ function getToken() {
   return token;
 }
 
+
 // =====================
 // ✅ 登录
 // =====================
@@ -26,7 +33,7 @@ async function login() {
   }
 
   try {
-    const res = await fetch("/api/login", {
+    const res = await fetch(API + "/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -40,16 +47,16 @@ async function login() {
 
     if (data.status === "success") {
 
-      // ✅ 存 token（关键🔥）
+      // ✅ 存 token + user（关键🔥）
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       alert("登录成功");
 
-      // ✅ 跳转
       window.location.href = "checkin.html";
 
     } else {
-      alert("账号或密码错误");
+      alert(data.message || "账号或密码错误");
     }
 
   } catch (err) {
@@ -59,19 +66,17 @@ async function login() {
 }
 
 
-
 // =====================
-// ✅ 根据状态跳转（复用🔥）
+// ✅ 根据状态跳转
 // =====================
 function redirectByStatus(token) {
-  fetch("/api/status", {
+  fetch(API + "/api/status", {
     headers: {
-      "authorization": token
+      "Authorization": "Bearer " + token
     }
   })
   .then(res => {
 
-    // ❌ token 失效
     if (res.status === 401 || res.status === 403) {
       alert("登录已过期");
       localStorage.clear();
@@ -98,8 +103,9 @@ function redirectByStatus(token) {
   });
 }
 
+
 // =====================
-// ✅ 打卡（极速+安全🔥）
+// ✅ 打卡
 // =====================
 function check() {
 
@@ -108,11 +114,11 @@ function check() {
 
   navigator.geolocation.getCurrentPosition(pos => {
 
-    fetch("/api/check", {
+    fetch(API + "/api/check", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "authorization": token
+        "Authorization": "Bearer " + token
       },
       body: JSON.stringify({
         lat: pos.coords.latitude,
@@ -150,17 +156,18 @@ function check() {
   });
 }
 
+
 // =====================
-// ✅ 加载打卡状态（按钮控制）
+// ✅ 加载状态（控制按钮）
 // =====================
 function loadStatus() {
 
   const token = getToken();
   if (!token) return;
 
-  fetch("/api/status", {
+  fetch(API + "/api/status", {
     headers: {
-      "authorization": token
+      "Authorization": "Bearer " + token
     }
   })
   .then(res => {
@@ -198,8 +205,9 @@ function loadStatus() {
   });
 }
 
+
 // =====================
-// ✅ 用户信息显示（右上角UI🔥）
+// ✅ 用户信息显示
 // =====================
 function loadUserInfo() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -209,14 +217,15 @@ function loadUserInfo() {
   if (!el) return;
 
   el.innerHTML = `
-    <div style="display:flex; align-items:center; gap:10px;">
-    <div>
-		<h1 style="background-color: #5a67d8;color:whi">${user.company}</h1><br>
-		<big><strong>${user.employeeId} - ${user.name} </strong></big>
+    <div style="text-align:center;">
+      <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
+        ${user.company}
+      </h2>
+      <p><strong>${user.employeeId} - ${user.name}</strong></p>
     </div>
-  </div>
   `;
 }
+
 
 // =====================
 // ✅ 加载全部记录（管理员）
@@ -226,9 +235,9 @@ function loadAll() {
   const token = getToken();
   if (!token) return;
 
-  fetch("/api/all", {
+  fetch(API + "/api/all", {
     headers: {
-      "authorization": token
+      "Authorization": "Bearer " + token
     }
   })
   .then(res => res.json())
@@ -256,16 +265,18 @@ function loadAll() {
   });
 }
 
+
 // =====================
-// ✅ 导出 Excel（带 token🔥）
+// ✅ 导出 Excel
 // =====================
 function exportExcel() {
 
   const token = getToken();
   if (!token) return;
 
-  window.open("/api/export?token=" + token);
+  window.open(API + "/api/export?token=" + token);
 }
+
 
 // =====================
 // ✅ 页面初始化

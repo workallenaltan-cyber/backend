@@ -5,23 +5,26 @@ const express = require("express");
 const pkg = require("pg");
 const cors = require("cors");
 require("dotenv").config();
-
 const path = require("path");
-
-app.use(express.static(path.join(__dirname, "public")));
 
 const { Pool } = pkg;
 
 // =====================
-// ✅ 初始化
+// ✅ 初始化（必须在最前🔥）
 // =====================
 const app = express();
 
+// =====================
+// ✅ 中间件
+// =====================
 app.use(cors({
   origin: "*"
 }));
 
 app.use(express.json());
+
+// ✅ 静态前端（方案3用）🔥
+app.use(express.static(path.join(__dirname, "public")));
 
 // =====================
 // ✅ 数据库
@@ -41,18 +44,18 @@ app.get("/", (req, res) => {
 });
 
 // =====================
-// ✅ 登录路由（重点🔥）
+// ✅ 路由
 // =====================
 const authRoutes = require("./routes/auth");
 app.use("/api", authRoutes);
 
 // =====================
-// ✅ 引入 token 验证（你缺这个🔥）
+// ✅ Token 验证
 // =====================
 const authMiddleware = require("./middleware/auth");
 
 // =====================
-// ✅ 受保护接口（测试用）
+// ✅ 测试保护接口
 // =====================
 app.get("/api/test", authMiddleware, (req, res) => {
   res.json({
@@ -62,20 +65,55 @@ app.get("/api/test", authMiddleware, (req, res) => {
 });
 
 // =====================
-// ✅ 获取考勤（必须带 token🔥）
+// ✅ 获取考勤
 // =====================
 app.get("/api/attendance", authMiddleware, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM attendance");
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error("ATTENDANCE ERROR:", err);
     res.status(500).json({ error: "server error" });
   }
 });
 
 // =====================
-// ❗ 启动服务器（只能有一个🔥）
+// ✅ 状态 API（你必须有🔥）
+// =====================
+app.get("/api/status", authMiddleware, async (req, res) => {
+  try {
+    const employeeId = req.user.id;
+    const today = new Date().toLocaleDateString("en-CA");
+
+    const result = await pool.query(
+      "SELECT * FROM attendance WHERE employee_id=$1 AND date=$2",
+      [employeeId, today]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({ status: "not_checked_in" });
+    }
+
+    const record = result.rows[0];
+
+    if (record.check_in_time && !record.check_out_time) {
+      return res.json({ status: "checked_in" });
+    }
+
+    if (record.check_in_time && record.check_out_time) {
+      return res.json({ status: "completed" });
+    }
+
+    res.json({ status: "not_checked_in" });
+
+  } catch (err) {
+    console.error("STATUS ERROR:", err);
+    res.status(500).json({ error: "server error" });
+  }
+});
+
+// =====================
+// ❗ 启动服务器（只能一个🔥）
 // =====================
 const PORT = process.env.PORT || 3000;
 
