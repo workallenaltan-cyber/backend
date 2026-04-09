@@ -102,7 +102,7 @@ function check() {
   // ✅ 按钮进入 processing 状态
   if (btn) {
     btn.disabled = true;
-    btn.innerText = "Processing...";
+    btn.innerHTML = "⏳ Processing...";
   }
 
   navigator.geolocation.getCurrentPosition(pos => {
@@ -154,7 +154,7 @@ function check() {
       // ❌ 出错恢复按钮
       if (btn) {
         btn.disabled = false;
-        btn.innerText = "点击打卡";
+        btn.innerText = "Click Check In";
       }
     });
 
@@ -164,7 +164,7 @@ function check() {
     // ❌ GPS失败恢复按钮
     if (btn) {
       btn.disabled = false;
-      btn.innerText = "点击打卡";
+      btn.innerText = "Click Check In";
     }
   });
 }
