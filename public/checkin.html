@@ -66,6 +66,20 @@ fetch("/api/status", {
       flex: 1;
       padding: 40px;
     }
+	/* 👉 用户信息（右上角） */
+	.user-box {
+	  position: absolute;
+	  top: 20px;
+	  right: 20px;
+	  text-align: right;
+	  font-size: 14px;
+	}
+
+	/* 每一行分开 */
+	.user-box p {
+	  margin: 2px 0;
+	}
+
 
     h2 {
       margin-bottom: 20px;
@@ -114,19 +128,6 @@ fetch("/api/status", {
     }
 	
 
-/* 👉 用户信息（右上角） */
-.user-box {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  text-align: right;
-  font-size: 14px;
-}
-
-/* 每一行分开 */
-.user-box p {
-  margin: 2px 0;
-}
 
 
   </style>
@@ -138,7 +139,7 @@ fetch("/api/status", {
   <!-- 左边 -->
   <div class="center">
     <h1>CHECK IN</h1><br>
-	<div id="userInfo" class="user-box"></div>
+	<div id="userInfo"></div>
 	<button id="checkInBtn" onclick="check()">CHECK IN</button>
   </div>
 
