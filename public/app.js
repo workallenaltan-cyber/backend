@@ -143,8 +143,27 @@ function loadUserInfo() {
 
   if (!user) return;
 
-  document.getElementById("userInfo").innerText =
-    `<p>Name: ${user.name} | ID: ${user.employeeId} | PUSAT: ${user.company}</p>`;
+  document.getElementById("userInfo").innerHTML = `
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div style="
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      background:white;
+      color:black;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:bold;">
+      ${user.name.charAt(0)}
+    </div>
+    <div>
+      <strong>${user.name}</strong><br>
+      <small>ID: ${user.employeeId}</small><br>
+      <small>${user.company}</small>
+    </div>
+  </div>
+`;
 }
 document.addEventListener("DOMContentLoaded", () => {
   loadStatus();
