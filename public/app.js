@@ -201,27 +201,12 @@ function loadUserInfo() {
   if (!el) return;
 
   el.innerHTML = `
-    <div style="
-      position:absolute;
-      top:15px;
-      right:20px;
-      text-align:right;
-      color:white;
-    ">
-      <div style="
-        background:#5a67d8;
-        padding:6px 10px;
-        border-radius:6px;
-        font-size:12px;
-      ">
-        ${user.company}
-      </div>
-
-      <div style="margin-top:5px;font-size:14px;">
-        <strong>${user.employeeId}</strong><br>
-        ${user.name}
-      </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+    <div>
+		<h1 style="background-color: #5a67d8;color:whi">${user.company}</h1><br>
+		<big><strong>${user.employeeId} - ${user.name} </strong></big>
     </div>
+  </div>
   `;
 }
 
