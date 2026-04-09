@@ -3,30 +3,24 @@
 // =====================
 const API = "https://backend-z9ir.onrender.com";
 
-
 // =====================
-// ✅ 当前页面路径
+// ✅ 当前页面路径 + token
 // =====================
 const path = window.location.pathname;
-const token = localStorage.getItem("token");
-
+let token = localStorage.getItem("token");
 
 // =====================
-// ✅ 页面控制（最重要🔥）
+// ✅ 页面控制（你要的🔥）
 // =====================
 
-// 👉 登录页（index.html）
+// 👉 登录页
 if (path.includes("index.html")) {
 
-  // 已登录 → 跳走
   if (token) {
     location.href = "checkin.html";
   }
 
-}
-
-// 👉 非登录页（必须有 token）
-else {
+} else {
 
   if (!token) {
     alert("请先登录");
@@ -34,7 +28,6 @@ else {
   }
 
 }
-
 
 // =====================
 // ✅ 登录
@@ -78,11 +71,12 @@ async function login() {
   }
 }
 
-
 // =====================
 // ✅ 打卡
 // =====================
 function check() {
+
+  const token = localStorage.getItem("token");
 
   navigator.geolocation.getCurrentPosition(pos => {
 
@@ -126,30 +120,13 @@ function check() {
     alert("无法获取GPS");
   });
 }
-// =====================
-// ✅ 用户信息
-// =====================
-function loadUserInfo() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user) return;
-
-  const el = document.getElementById("userInfo");
-  if (!el) return;
-
-  el.innerHTML = `
-    <div style="text-align:center;">
-      <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
-        ${user.company}
-      </h2>
-      <p><strong>${user.employeeId} - ${user.name}</strong></p>
-    </div>
-  `;
-}
 
 // =====================
-// ✅ 状态跳转
+// ✅ 状态控制 + 自动跳转
 // =====================
 function loadStatus() {
+
+  const token = localStorage.getItem("token");
 
   fetch(API + "/api/status", {
     headers: {
@@ -169,7 +146,7 @@ function loadStatus() {
   .then(data => {
     if (!data) return;
 
-    // 🔥 自动跳转
+    // ✅ 自动跳转
     if (data.status === "not_checked_in" && !path.includes("checkin")) {
       location.href = "checkin.html";
     }
@@ -182,30 +159,46 @@ function loadStatus() {
       location.href = "done.html";
     }
 
-    // 🔥 控制按钮
+    // ✅ 按钮控制
     const inBtn = document.getElementById("checkInBtn");
     const outBtn = document.getElementById("checkOutBtn");
 
-    if (inBtn && outBtn) {
-      inBtn.style.display = data.status === "not_checked_in" ? "block" : "none";
-      outBtn.style.display = data.status === "checked_in" ? "block" : "none";
-    }
+    if (inBtn) inBtn.style.display = data.status === "not_checked_in" ? "block" : "none";
+    if (outBtn) outBtn.style.display = data.status === "checked_in" ? "block" : "none";
   });
 }
 
+// =====================
+// ✅ 显示用户信息（重点🔥🔥🔥）
+// =====================
+function loadUserInfo() {
 
+  const userStr = localStorage.getItem("user");
+  if (!userStr) return;
 
+  const user = JSON.parse(userStr);
 
+  const el = document.getElementById("userInfo");
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="text-align:center;">
+      <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
+        ${user.company}
+      </h2>
+      <p><strong>ID: ${user.employeeId}</strong></p>
+      <p><strong>Name: ${user.name}</strong></p>
+    </div>
+  `;
+}
 
 // =====================
-// ✅ 页面初始化（修复🔥）
+// ✅ 页面初始化
 // =====================
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ❌ 登录页不执行
   if (path.includes("index.html")) return;
 
-  // ✅ 其他页面才执行
   loadStatus();
   loadUserInfo();
 
