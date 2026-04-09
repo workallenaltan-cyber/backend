@@ -12,7 +12,7 @@ fetch("/api/status", {
   if (status.status === "completed" && location.pathname.includes("done")) return;
 
   // ❌ 状态不匹配 → 重定向
-  location.href = "dashboard.html";
+  location.href = "index.html";
 });
 </script>
 
