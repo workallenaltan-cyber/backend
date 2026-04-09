@@ -266,4 +266,70 @@ router.get("/export", verify, async (req, res) => {
 
 
 // =============================
+// ✅ 获取今天个人记录（最终稳定版🔥）
+// =============================
+router.get("/my-today", verify, async (req, res) => {
+  try {
+    const employeeId = req.user.id;
+
+    // =============================
+    // ✅ 马来西亚时间（关键🔥）
+    // =============================
+    const now = new Date();
+
+    const malaysiaDate = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Kuala_Lumpur" })
+    );
+
+    const today = malaysiaDate.toISOString().split("T")[0]; // YYYY-MM-DD
+
+    console.log("📅 TODAY:", today);
+    console.log("👤 USER:", employeeId);
+
+    // =============================
+    // ✅ 查询
+    // =============================
+    const result = await pool.query(
+      `SELECT 
+        TO_CHAR(check_in_time, 'HH24:MI:SS') AS check_in_time,
+        TO_CHAR(check_out_time, 'HH24:MI:SS') AS check_out_time,
+        TO_CHAR(date, 'DD/MM/YYYY') AS adate
+       FROM attendance
+       WHERE employee_id=$1 AND date=$2`,
+      [employeeId, today]
+    );
+
+    // =============================
+    // ✅ 没记录
+    // =============================
+    if (result.rows.length === 0) {
+      return res.json({
+        status: "empty",
+        message: "今天还没打卡"
+      });
+    }
+
+    const row = result.rows[0];
+
+    // =============================
+    // ✅ 返回数据（统一格式🔥）
+    // =============================
+    res.json({
+      status: "success",
+      adate: row.adate,
+      check_in_time: row.check_in_time,
+      check_out_time: row.check_out_time || null
+    });
+
+  } catch (err) {
+    console.error("❌ MY-TODAY ERROR:", err);
+
+    res.status(500).json({
+      status: "error",
+      message: "服务器错误"
+    });
+  }
+});
+
+// =============================
 module.exports = router;

@@ -207,15 +207,27 @@ function loadTodayRecord() {
   .then(res => res.json())
   .then(data => {
 
-    if (!data || !data.check_in_time) return;
-
     const el = document.getElementById("todayInfo");
     if (!el) return;
 
+    // ❌ 没打卡
+    if (data.status === "empty") {
+      el.innerHTML = `<p style="color:red;">今天还没打卡</p>`;
+      return;
+    }
+
+    // ❌ 错误
+    if (data.status !== "success") {
+      el.innerHTML = `<p style="color:red;">加载失败</p>`;
+      return;
+    }
+
+    // ✅ 正常显示
     el.innerHTML = `
       <div style="margin-top:15px;">
         <p><strong>📅 日期:</strong> ${data.adate}</p>
-        <p><strong>🕒 上班时间:</strong> ${data.check_in_time}</p>
+        <p><strong>🕒 上班:</strong> ${data.check_in_time}</p>
+        <p><strong>🕕 下班:</strong> ${data.check_out_time || "-"}</p>
       </div>
     `;
   });
