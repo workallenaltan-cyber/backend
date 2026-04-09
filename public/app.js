@@ -126,7 +126,25 @@ function check() {
     alert("无法获取GPS");
   });
 }
+// =====================
+// ✅ 用户信息
+// =====================
+function loadUserInfo() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return;
 
+  const el = document.getElementById("userInfo");
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="text-align:center;">
+      <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
+        ${user.company}
+      </h2>
+      <p><strong>${user.employeeId} - ${user.name}</strong></p>
+    </div>
+  `;
+}
 
 // =====================
 // ✅ 状态跳转
@@ -176,25 +194,7 @@ function loadStatus() {
 }
 
 
-// =====================
-// ✅ 用户信息
-// =====================
-function loadUserInfo() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user) return;
 
-  const el = document.getElementById("userInfo");
-  if (!el) return;
-
-  el.innerHTML = `
-    <div style="text-align:center;">
-      <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
-        ${user.company}
-      </h2>
-      <p><strong>${user.employeeId} - ${user.name}</strong></p>
-    </div>
-  `;
-}
 
 
 // =====================
