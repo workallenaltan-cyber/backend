@@ -203,7 +203,7 @@ router.get("/all", verify, verifyAdmin, async (req, res) => {
 // =============================
 // ✅ 导出 Excel（支持 token🔥）
 // =============================
-router.get("/export", verify, verifyAdmin, async (req, res) => { {
+router.get("/export", verify, verifyAdmin, async (req, res) => { 
   try {
     const result = await pool.query(
       `SELECT 
@@ -330,6 +330,16 @@ router.get("/my-today", verify, async (req, res) => {
     });
   }
 });
+
+// =============================
+// ✅ Admin 权限验证
+// =============================
+function verifyAdmin(req, res, next) {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({ msg: "无权限" });
+  }
+  next();
+}
 
 // =============================
 module.exports = router;
