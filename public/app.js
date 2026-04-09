@@ -1,38 +1,22 @@
 // =====================
-// ✅ API 地址
+// ✅ API 地址（重要🔥）
 // =====================
 const API = "https://backend-z9ir.onrender.com";
 
 
 // =====================
-// ✅ 当前页面路径
+// ✅ 通用：检查 token
 // =====================
-const path = window.location.pathname;
-const token = localStorage.getItem("token");
-
-
-// =====================
-// ✅ 页面控制（最重要🔥）
-// =====================
-
-// 👉 登录页（index.html）
-if (path.includes("index.html")) {
-
-  // 已登录 → 跳走
-  if (token) {
-    location.href = "checkin.html";
-  }
-
-}
-
-// 👉 非登录页（必须有 token）
-else {
+function getToken() {
+  const token = localStorage.getItem("token");
 
   if (!token) {
     alert("请先登录");
     location.href = "index.html";
+    return null;
   }
 
+  return token;
 }
 
 
@@ -59,14 +43,17 @@ async function login() {
 
     const data = await res.json();
 
+    console.log("LOGIN RESPONSE:", data);
+
     if (data.status === "success") {
 
+      // ✅ 存 token + user（关键🔥）
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       alert("登录成功");
 
-      location.href = "checkin.html";
+      window.location.href = "checkin.html";
 
     } else {
       alert(data.message || "账号或密码错误");
@@ -80,9 +67,50 @@ async function login() {
 
 
 // =====================
+// ✅ 根据状态跳转
+// =====================
+function redirectByStatus(token) {
+  fetch(API + "/api/status", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+
+    if (res.status === 401 || res.status === 403) {
+      alert("登录已过期");
+      localStorage.clear();
+      location.href = "index.html";
+      return;
+    }
+
+    return res.json();
+  })
+  .then(status => {
+    if (!status) return;
+
+    if (status.status === "not_checked_in") {
+      location.href = "checkin.html";
+    }
+
+    if (status.status === "checked_in") {
+      location.href = "checkout.html";
+    }
+
+    if (status.status === "completed") {
+      location.href = "done.html";
+    }
+  });
+}
+
+
+// =====================
 // ✅ 打卡
 // =====================
 function check() {
+
+  const token = getToken();
+  if (!token) return;
 
   navigator.geolocation.getCurrentPosition(pos => {
 
@@ -99,7 +127,8 @@ function check() {
     })
     .then(res => {
 
-      if (res.status === 401) {
+      if (res.status === 401 || res.status === 403) {
+        alert("登录已过期");
         localStorage.clear();
         location.href = "index.html";
         return;
@@ -129,9 +158,12 @@ function check() {
 
 
 // =====================
-// ✅ 状态跳转
+// ✅ 加载状态（控制按钮）
 // =====================
 function loadStatus() {
+
+  const token = getToken();
+  if (!token) return;
 
   fetch(API + "/api/status", {
     headers: {
@@ -140,7 +172,7 @@ function loadStatus() {
   })
   .then(res => {
 
-    if (res.status === 401) {
+    if (res.status === 401 || res.status === 403) {
       localStorage.clear();
       location.href = "index.html";
       return;
@@ -151,33 +183,31 @@ function loadStatus() {
   .then(data => {
     if (!data) return;
 
-    // 🔥 自动跳转
-    if (data.status === "not_checked_in" && !path.includes("checkin")) {
-      location.href = "checkin.html";
-    }
-
-    if (data.status === "checked_in" && !path.includes("checkout")) {
-      location.href = "checkout.html";
-    }
-
-    if (data.status === "completed" && !path.includes("done")) {
-      location.href = "done.html";
-    }
-
-    // 🔥 控制按钮
     const inBtn = document.getElementById("checkInBtn");
     const outBtn = document.getElementById("checkOutBtn");
 
-    if (inBtn && outBtn) {
-      inBtn.style.display = data.status === "not_checked_in" ? "block" : "none";
-      outBtn.style.display = data.status === "checked_in" ? "block" : "none";
+    if (!inBtn || !outBtn) return;
+
+    if (data.status === "not_checked_in") {
+      inBtn.style.display = "block";
+      outBtn.style.display = "none";
+    }
+
+    if (data.status === "checked_in") {
+      inBtn.style.display = "none";
+      outBtn.style.display = "block";
+    }
+
+    if (data.status === "completed") {
+      inBtn.style.display = "none";
+      outBtn.style.display = "none";
     }
   });
 }
 
 
 // =====================
-// ✅ 用户信息
+// ✅ 用户信息显示
 // =====================
 function loadUserInfo() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -198,15 +228,60 @@ function loadUserInfo() {
 
 
 // =====================
-// ✅ 页面初始化（修复🔥）
+// ✅ 加载全部记录（管理员）
+// =====================
+function loadAll() {
+
+  const token = getToken();
+  if (!token) return;
+
+  fetch(API + "/api/all", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    const table = document.getElementById("tableBody");
+    if (!table) return;
+
+    table.innerHTML = "";
+
+    data.forEach(row => {
+      table.innerHTML += `
+        <tr>
+          <td>${row.employee_id}</td>
+          <td>${row.employee_name}</td>
+          <td>${row.company_name}</td>
+          <td>${row.adate}</td>
+          <td>${row.check_in_time}</td>
+          <td>${row.check_out_time || ""}</td>
+          <td>${row.check_in_lat}, ${row.check_in_lng}</td>
+          <td>${row.check_out_lat || ""}, ${row.check_out_lng || ""}</td>
+        </tr>
+      `;
+    });
+  });
+}
+
+
+// =====================
+// ✅ 导出 Excel
+// =====================
+function exportExcel() {
+
+  const token = getToken();
+  if (!token) return;
+
+  window.open(API + "/api/export?token=" + token);
+}
+
+
+// =====================
+// ✅ 页面初始化
 // =====================
 document.addEventListener("DOMContentLoaded", () => {
-
-  // ❌ 登录页不执行
-  if (path.includes("index.html")) return;
-
-  // ✅ 其他页面才执行
   loadStatus();
   loadUserInfo();
-
 });
