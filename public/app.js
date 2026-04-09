@@ -331,12 +331,36 @@ function loadAll() {
 
       // ✅ 状态判断（加分🔥）
       let status = "正常";
-      let className = "on-time";
+		let className = "on-time";
 
-      if (!row.check_out_time) {
-        status = "未下班";
-        className = "late";
-      }
+		// =====================
+		// ✅ 判断迟到（核心🔥）
+		// =====================
+		if (row.check_in_time) {
+
+		  const time = row.check_in_time.split(":");
+		  const hour = parseInt(time[0]);
+		  const min = parseInt(time[1]);
+
+		  // 转成分钟
+		  const totalMin = hour * 60 + min;
+
+		  const start = 8 * 60;       // 08:00
+		  const late = 8 * 60 + 30;   // 08:30
+
+		  if (totalMin > late) {
+			status = "迟到";
+			className = "late";
+		  }
+		}
+
+		// =====================
+		// ✅ 未下班优先
+		// =====================
+		if (!row.check_out_time) {
+		  status = "未下班";
+		  className = "late";
+		}
 
       table.innerHTML += `
         <tr>
