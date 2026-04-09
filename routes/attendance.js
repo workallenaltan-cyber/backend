@@ -169,7 +169,7 @@ router.post("/check", verify, async (req, res) => {
 // =============================
 // ✅ 所有记录
 // =============================
-router.get("/all", verify, verifyAdmin, async (req, res) => { {
+router.get("/all", verify, verifyAdmin, async (req, res) => { 
   try {
     const result = await pool.query(
       `SELECT 
