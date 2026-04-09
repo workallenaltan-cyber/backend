@@ -16,12 +16,48 @@ function verify(req, res, next) {
   });
 }
 
-// 打卡
-router.post("/check", verify, async (req, res) => {
-  const { lat, lng } = req.body;
+// 获取今天打卡状态
+router.get("/status", verify, async (req, res) => {
   const employeeId = req.user.id;
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Kuala_Lumpur"
+  });
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM attendance WHERE employee_id=$1 AND date=$2",
+      [employeeId, today]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({ status: "not_checked_in" });
+    }
+
+    const record = result.rows[0];
+
+    if (!record.check_out_time) {
+      return res.json({ status: "checked_in" });
+    }
+
+    return res.json({ status: "completed" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "error" });
+  }
+});
+
+// 打卡
+router.post("/check", verify, async (req, res) => {
+	const { lat, lng } = req.body;
+	const employeeId = req.user.id;
+
+	const now = new Date();
+
+	const today = now.toLocaleDateString("en-CA", {
+	  timeZone: "Asia/Kuala_Lumpur"
+	});
 
   try {
     const result = await pool.query(

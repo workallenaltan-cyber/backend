@@ -59,6 +59,8 @@ function check() {
     .then(data => {
       console.log(data);
       alert(data.msg);
+	   // 🔥 打卡后刷新状态
+		loadStatus();
     });
 
   }, () => {
@@ -96,3 +98,38 @@ function loadAll() {
 function exportExcel() {
   window.open("/api/export");
 }
+
+function loadStatus() {
+  fetch("/api/status", {
+    headers: {
+      "authorization": localStorage.getItem("token")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("状态:", data);
+
+    const inBtn = document.getElementById("checkInBtn");
+    const outBtn = document.getElementById("checkOutBtn");
+
+    if (data.status === "not_checked_in") {
+      inBtn.style.display = "block";
+      outBtn.style.display = "none";
+    }
+
+    if (data.status === "checked_in") {
+      inBtn.style.display = "none";
+      outBtn.style.display = "block";
+    }
+
+    if (data.status === "completed") {
+      inBtn.style.display = "none";
+      outBtn.style.display = "none";
+      alert("今天已完成打卡");
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadStatus();
+});

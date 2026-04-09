@@ -93,10 +93,11 @@
       }
     }
   </style>
-<body>
+<body onload="loadStatus()">
 <h2>PUNCHCARD SYSTEM</h2>
 
-<button onclick="check()">CHECK IN</button>
+<button id="checkInBtn" onclick="check()">CHECK IN</button>
+<button id="checkOutBtn" onclick="check()" style="display:none;">CHECK OUT</button>
 
 <script src="/app.js"></script>
 </body>
