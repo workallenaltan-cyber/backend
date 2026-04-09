@@ -114,18 +114,6 @@ fetch("/api/status", {
     }
 	
 
-
-/* 顶部区域 */
-.header {
-  position: relative;
-  padding: 20px;
-}
-
-/* 标题 */
-.header h1 {
-  margin: 0;
-}
-
 /* 👉 用户信息（右上角） */
 .user-box {
   position: absolute;
@@ -150,7 +138,7 @@ fetch("/api/status", {
   <!-- 左边 -->
   <div class="center">
     <h1>CHECK IN</h1><br>
-	<div id="userInfo" ></div>
+	<div id="userInfo" class="user-box"></div>
 	<button id="checkInBtn" onclick="check()">CHECK IN</button>
   </div>
 
