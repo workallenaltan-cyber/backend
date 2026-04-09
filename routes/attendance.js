@@ -3,9 +3,6 @@ const router = express.Router();
 const pool = require("../db");
 const jwt = require("jsonwebtoken");
 const ExcelJS = require("exceljs");
-const ip =
-  req.headers["x-forwarded-for"]?.split(",")[0] ||
-  req.socket.remoteAddress;
 
 // =============================
 // ✅ Token 验证（升级版🔥）
