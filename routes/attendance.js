@@ -95,11 +95,11 @@ router.post("/check", verify, async (req, res) => {
     // =============================
     if (result.rows.length === 0) {
       await pool.query(
-        `INSERT INTO attendance 
-        (employee_id, date, check_in_time, check_in_lat, check_in_lng)
-        VALUES ($1,$2,$3,$4,$5)`,
-        [employeeId, today, now, lat, lng]
-      );
+		  `INSERT INTO attendance 
+		  (employee_id, date, check_in_time, check_in_lat, check_in_lng, check_in_ip)
+		  VALUES ($1,$2,$3,$4,$5,$6)`,
+		  [employeeId, today, now, lat, lng, ip]
+		);
 
       return res.json({
         status: "checkin",
@@ -114,11 +114,11 @@ router.post("/check", verify, async (req, res) => {
     // =============================
     if (!record.check_out_time) {
       await pool.query(
-        `UPDATE attendance 
-         SET check_out_time=$1, check_out_lat=$2, check_out_lng=$3
-         WHERE id=$4`,
-        [now, lat, lng, record.id]
-      );
+	  `UPDATE attendance 
+	   SET check_out_time=$1, check_out_lat=$2, check_out_lng=$3, check_out_ip=$4
+	   WHERE id=$5`,
+	  [now, lat, lng, ip, record.id]
+	);
 
       return res.json({
         status: "checkout",
@@ -156,7 +156,9 @@ router.get("/all", verify, async (req, res) => {
         attendance.check_in_lat,
         attendance.check_in_lng,
         attendance.check_out_lat,
-        attendance.check_out_lng
+        attendance.check_out_lng,
+		attendance.check_in_ip,
+		attendance.check_out_ip
       FROM attendance
       INNER JOIN users ON attendance.employee_id = users.employee_id
       LEFT JOIN company ON users.company_code = company.company_code
@@ -187,7 +189,9 @@ router.get("/export", verify, async (req, res) => {
         attendance.check_in_lat,
         attendance.check_in_lng,
         attendance.check_out_lat,
-        attendance.check_out_lng
+        attendance.check_out_lng,
+		attendance.check_in_ip,
+		attendance.check_out_ip
       FROM attendance
       INNER JOIN users ON attendance.employee_id = users.employee_id
       LEFT JOIN company ON users.company_code = company.company_code
@@ -207,7 +211,9 @@ router.get("/export", verify, async (req, res) => {
       { header: "上班纬度", key: "check_in_lat" },
       { header: "上班经度", key: "check_in_lng" },
       { header: "下班纬度", key: "check_out_lat" },
-      { header: "下班经度", key: "check_out_lng" }
+      { header: "下班经度", key: "check_out_lng" },
+	  { header: "上班IP", key: "check_in_ip" },
+	  { header: "下班IP", key: "check_out_ip" }
     ];
 
     result.rows.forEach(row => sheet.addRow(row));

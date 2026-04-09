@@ -91,6 +91,10 @@ function redirectByStatus(token) {
 function check() {
 
   const token = getToken();
+  const ip = (req.headers["x-forwarded-for"] || "")
+  .split(",")[0]
+  .trim() || req.socket.remoteAddress;
+  
   if (!token) return;
 
   navigator.geolocation.getCurrentPosition(pos => {
