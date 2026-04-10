@@ -32,6 +32,10 @@ body {
   margin-bottom: 30px;
 }
 
+.sidebar.collapsed .logo {
+  display: none;
+}
+
 /* 菜单 */
 .menu {
   display: flex;
@@ -81,7 +85,17 @@ body {
 
 .top-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
+  margin-left: auto;   /* ✅ 强制推到最右 */
+}
+
+.top-actions input {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 180px;
 }
 
 /* ===== 搜索框 ===== */
@@ -106,10 +120,11 @@ input {
 }
 
 /* ===== Toggle Button（修复版🔥） ===== */
+
 .toggle-btn {
-  position: absolute;        /* ✅ 改成 fixed，最稳定 */
-  top: 30px;
-  left: 215px;            /* 跟 sidebar 贴边 */
+  position: absolute;   /* ✅ 回到 absolute */
+  top: 15px;
+  right: -15px;         /* 半露在外面 */
   background: white;
   color: #5b6cff;
   border-radius: 10px;
