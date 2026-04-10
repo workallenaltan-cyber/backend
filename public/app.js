@@ -643,8 +643,21 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUserInfo();
 
   if (isAdmin) {
-    // ✅ admin 只加载表格
-    loadAll();
+     flatpickr("#monthFilter", {
+		dateFormat: "Y-m",
+		plugins: [
+		  new monthSelectPlugin({
+			shorthand: true,
+			dateFormat: "Y-m",
+			altFormat: "F Y"
+		  })
+		],
+		defaultDate: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+		onChange: function() {
+		  loadAll();
+		}
+	  });
+
   } else {
     // ✅ staff 才执行打卡逻辑
     loadStatus();
