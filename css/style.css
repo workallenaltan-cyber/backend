@@ -1,0 +1,148 @@
+/* =======================
+   🌈 全局风格（你现在的紫色系🔥）
+======================= */
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  margin: 0;
+}
+
+/* =======================
+   📦 页面容器
+======================= */
+.container {
+  padding: 30px;
+}
+
+/* =======================
+   🏷️ 标题
+======================= */
+h1 {
+  margin-bottom: 20px;
+}
+
+/* =======================
+   🔘 按钮（统一风格🔥）
+======================= */
+.btn {
+  background: #5a67d8;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #434190;
+}
+
+/* =======================
+   📊 表格（你截图那种🔥）
+======================= */
+.table-container {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  overflow-x: auto;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f1f1f1;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+tr {
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+  background: #f9fafb;
+}
+
+/* =======================
+   🟢 状态标签
+======================= */
+.badge {
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.on-time {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.late {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+/* =======================
+   🔴 迟到时间高亮（你要的🔥）
+======================= */
+.late-time {
+  color: red;
+  font-weight: bold;
+}
+
+/* =======================
+   📂 Sidebar（隐藏目录🔥）
+======================= */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #5a67d8;
+  color: white;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.sidebar.hide {
+  left: -240px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  margin: 15px 0;
+  text-decoration: none;
+}
+
+.main {
+  margin-left: 240px;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.main.full {
+  margin-left: 0;
+}
+
+/* =======================
+   ☰ 按钮
+======================= */
+.toggle-btn {
+  background: #5a67d8;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+}
