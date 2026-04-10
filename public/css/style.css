@@ -108,10 +108,10 @@ input {
 }
 
 .toggle-btn {
-  position: absolute;
+  position: absolute;   /* ✅ 保留这个 */
   top: 20px;
-  right: 0;                 /* 先贴边 */
-  transform: translateX(50%); /* 再推出去一半 */
+  right: 0;
+  transform: translateX(50%);
   background: white;
   color: #5b6cff;
   border-radius: 10px;
@@ -119,8 +119,6 @@ input {
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   z-index: 999;
-  
-   position: relative;
 }
 
 .sidebar.collapsed .toggle-btn {
