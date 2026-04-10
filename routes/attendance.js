@@ -115,7 +115,7 @@ router.post("/check", verify, async (req, res) => {
       [employeeId, today]
     );
 	
-	/*// =============================
+	// =============================
 	// ✅ 查询公司位置
 	// =============================
 	const companyRes = await pool.query(
@@ -149,7 +149,7 @@ router.post("/check", verify, async (req, res) => {
 	  return res.status(403).json({
 		msg: `超出打卡范围（${Math.round(distance)}米）`
 	  });
-	}*/
+	}
 
     // =============================
     // ✅ 上班
