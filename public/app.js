@@ -552,7 +552,7 @@ function loadAll() {
 /* =========================
    ✅ 导出 Excel（带 token）
 ========================= */
-function exportExcel() {
+/*function exportExcel() {
   fetch(API + "/api/export", {
     headers: { "Authorization": "Bearer " + token }
   })
@@ -574,37 +574,63 @@ function exportExcel() {
     a.download = "attendance.xlsx";
     a.click();
   });
-}
+}*/
 
 function exportExcel() {
-  const token = localStorage.getItem("token");
-  const month = document.getElementById("monthFilter").value;
 
-  if (!month) {
-    alert("请选择月份");
-    return;
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  // ✅ 获取月份
+  const month = document.getElementById("monthFilter")?.value;
+
+  let url = API + "/api/export";
+
+  if (month) {
+    url += "?month=" + month;
   }
 
-  fetch(API + "/api/export?month=" + month, {   // ✅ 带参数
-    headers: { "Authorization": "Bearer " + token }
+  fetch(url, {
+    headers: { 
+      "Authorization": "Bearer " + token 
+    }
   })
   .then(res => {
+
     if (res.status === 401 || res.status === 403) {
       alert("登录已过期");
       localStorage.clear();
       location.href = "index.html";
       return;
     }
+
     return res.blob();
   })
   .then(blob => {
+
     if (!blob) return;
 
-    const url = window.URL.createObjectURL(blob);
+    const downloadUrl = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `attendance_${month}.xlsx`;  // ✅ 文件名带月份
+
+    a.href = downloadUrl;
+
+    // ✅ 文件名带月份（高级🔥）
+    a.download = month 
+      ? `attendance_${month}.xlsx`
+      : "attendance_all.xlsx";
+
+    document.body.appendChild(a);
     a.click();
+    a.remove();
+
+    // ✅ 释放内存（专业写法🔥）
+    window.URL.revokeObjectURL(downloadUrl);
+
+  })
+  .catch(err => {
+    console.error(err);
+    alert("导出失败");
   });
 }
 
