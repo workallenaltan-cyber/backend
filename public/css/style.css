@@ -106,7 +106,7 @@ input {
 }
 
 .toggle-btn {
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 240px;
   background: white;
@@ -118,8 +118,8 @@ input {
 }
 
 /* 收起时 */
-.sidebar.collapsed ~ .toggle-btn {
-  left: 90px;
+.sidebar.collapsed .toggle-btn {
+  right: -15px;
 }
 /* ===== 卡片 ===== */
 .card {
