@@ -254,6 +254,15 @@ router.get("/all", verify, verifyAdmin, async (req, res) => {
     if (month) {
       sql += ` WHERE TO_CHAR(attendance.date, 'YYYY-MM') = $1`;
     }
+	 if (!month) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - 1);
+
+      const year = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+
+      month = `${year}-${m}`; // 👉 变成 YYYY-MM
+    }
 
     sql += ` ORDER BY attendance.date DESC`;
 
@@ -267,6 +276,7 @@ router.get("/all", verify, verifyAdmin, async (req, res) => {
     res.status(500).json({ msg: "服务器错误" });
   }
 });
+
 
 
 // =============================
