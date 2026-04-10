@@ -13,14 +13,34 @@
 
 <!-- ✅ Sidebar -->
 <div class="sidebar" id="sidebar">
-  <h2>⚙️ Admin</h2>
-  <a href="admin.html">📊 打卡记录</a>
-  <a href="employees.html">👥 员工管理</a>
-  <a href="#" onclick="logout()">🚪 退出</a>
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+
+  <div class="logo">MNI</div>
+
+  <a href="admin.html" class="menu active">
+    📊 <span>Dashboard</span>
+  </a>
+
+  <a href="employees.html" class="menu">
+    👥 <span>员工管理</span>
+  </a>
+
+  <a href="company.html" class="menu">
+    🏢 <span>公司管理</span>
+  </a>
+
+  <a href="settings.html" class="menu">
+    ⚙️ <span>设置</span>
+  </a>
+
 </div>
 
-<!-- ✅ 主内容 -->
-<div class="main" id="main">
+<!-- Toggle Button -->
+<div class="toggle-btn" onclick="toggleSidebar()">☰</div>
+
+<!-- 主内容 -->
+<div id="main">
 
   <!-- 顶部 -->
   <div class="topbar">

@@ -20,6 +20,15 @@ function autoLogoutAfterWork() {
 }
 
 
+const links = document.querySelectorAll(".menu");
+const current = window.location.pathname;
+
+links.forEach(link => {
+  if (link.getAttribute("href") === current.split("/").pop()) {
+    link.classList.add("active");
+  }
+});
+
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const role = user.role;
 const isAdmin = role === "admin";
@@ -350,7 +359,10 @@ function loadTodayRecord() {
     `;
   });
 }
-
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+  document.getElementById("main").classList.toggle("collapsed");
+}
 /* =========================
    ✅ 加载数据
 ========================= */
