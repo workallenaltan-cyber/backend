@@ -464,6 +464,29 @@ function loadAll() {
 /* =========================
    ✅ 导出 Excel（带 token）
 ========================= */
+function exportExcel() {
+  fetch(API + "/api/export", {
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(res => {
+    if (res.status === 401 || res.status === 403) {
+      alert("登录已过期");
+      localStorage.clear();
+      location.href = "index.html";
+      return;
+    }
+    return res.blob();
+  })
+  .then(blob => {
+    if (!blob) return;
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "attendance.xlsx";
+    a.click();
+  });
+}
 
 function exportExcel() {
   const token = localStorage.getItem("token");
@@ -506,22 +529,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUserInfo();
 
   if (isAdmin) {
-	  flatpickr("#monthFilter", {
-		dateFormat: "Y-m",
-		plugins: [
-		  new monthSelectPlugin({
-			shorthand: true,
-			dateFormat: "Y-m",
-			altFormat: "F Y"
-		  })
-		],
-		defaultDate: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-		onChange: function(selectedDates, dateStr) {
-		  // ✅ admin 只加载表格
-		  loadAll();
-		}
-    
-  }} else {
+    // ✅ admin 只加载表格
+    loadAll();
+  } else {
     // ✅ staff 才执行打卡逻辑
     loadStatus();
     loadTodayInRecord();
@@ -529,8 +539,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
-
-
 
 // =====================
 // ✅ 用户操作监听（🔥放这里）

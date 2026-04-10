@@ -5,31 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link rel="icon" href="/img/mnl_icon.png">
-
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="/css/style.css">
-  
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
-<script>
-flatpickr("#monthFilter", {
-  dateFormat: "Y-m",
-  plugins: [
-    new monthSelectPlugin({
-      shorthand: true,
-      dateFormat: "Y-m",
-      altFormat: "F Y"
-    })
-  ],
-  defaultDate: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-  onChange: function(selectedDates, dateStr) {
-    loadAll();
-  }
-});
-</script>
+
 <body>
 
 <div class="sidebar" id="sidebar">
@@ -66,7 +46,7 @@ flatpickr("#monthFilter", {
   <div class="topbar">
 
     <div class="top-actions">
-	  <input type="text" id="monthFilter" placeholder="Month">
+	  <input type="month" id="monthFilter" class="input-month">
       <input type="text" id="searchInput" placeholder="搜索员工..." onkeyup="filterTable()">
       <button class="btn" onclick="exportExcel()">导出 Excel</button>
     </div>
@@ -139,8 +119,6 @@ function logout() {
   localStorage.clear();
   location.href = "index.html";
 }
-
-
 </script>
 
 </body>
