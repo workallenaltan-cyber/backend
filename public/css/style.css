@@ -107,7 +107,7 @@ input {
 
 /* ===== Toggle Button（修复版🔥） ===== */
 .toggle-btn {
-  position: fixed;        /* ✅ 改成 fixed，最稳定 */
+  position: absolute;        /* ✅ 改成 fixed，最稳定 */
   top: 30px;
   left: 215px;            /* 跟 sidebar 贴边 */
   background: white;
