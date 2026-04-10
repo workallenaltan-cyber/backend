@@ -19,6 +19,7 @@ function autoLogoutAfterWork() {
   }
 }
 
+app.use(express.static("public"));
 
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const role = user.role;
