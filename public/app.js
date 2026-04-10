@@ -506,8 +506,18 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUserInfo();
 
   if (isAdmin) {
-    // ✅ admin 只加载表格
-    loadAll();
+	  
+	const input = document.getElementById("monthFilter");
+
+	const now = new Date();
+	now.setMonth(now.getMonth() - 1);
+
+	const year = now.getFullYear();
+	const month = String(now.getMonth() + 1).padStart(2, "0");
+
+	input.value = `${year}-${month}`;  
+	// ✅ admin 只加载表格
+	loadAll();
   } else {
     // ✅ staff 才执行打卡逻辑
     loadStatus();
@@ -515,6 +525,21 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTodayRecord();
   }
 
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("monthFilter");
+
+  const now = new Date();
+  now.setMonth(now.getMonth() - 1);
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+
+  input.value = `${year}-${month}`;
+
+  // ✅ 自动加载
+  loadAll();
 });
 
 // =====================

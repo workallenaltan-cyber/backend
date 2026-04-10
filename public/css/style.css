@@ -4,6 +4,11 @@ body {
   font-family: Arial;
   background: #f5f6fa;
 }
+.input-month {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
 
 /* ===== Sidebar ===== */
 .sidebar {
@@ -201,3 +206,4 @@ tr:hover {
   color: red;
   font-weight: bold;
 }
+
