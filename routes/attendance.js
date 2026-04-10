@@ -114,6 +114,42 @@ router.post("/check", verify, async (req, res) => {
       "SELECT * FROM attendance WHERE employee_id=$1 AND date=$2",
       [employeeId, today]
     );
+	
+	// =============================
+	// ✅ 查询公司位置
+	// =============================
+	const companyRes = await pool.query(
+	  `SELECT c.lat, c.lng, c.radius
+	   FROM users u
+	   JOIN company c ON u.company_code = c.company_code
+	   WHERE u.employee_id = $1`,
+	  [employeeId]
+	);
+
+	if (companyRes.rows.length === 0) {
+	  return res.status(400).json({ msg: "公司位置未设置" });
+	}
+
+	const company = companyRes.rows[0];
+
+	// =============================
+	// ✅ 计算距离
+	// =============================
+	const distance = getDistance(
+	  lat,
+	  lng,
+	  company.lat,
+	  company.lng
+	);
+
+	// =============================
+	// ❌ 超出范围
+	// =============================
+	if (distance > company.radius) {
+	  return res.status(403).json({
+		msg: `超出打卡范围（${Math.round(distance)}米）`
+	  });
+	}
 
     // =============================
     // ✅ 上班
