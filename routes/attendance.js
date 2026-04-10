@@ -408,6 +408,15 @@ router.get("/export", verify, verifyAdmin, async (req, res) => {
     ];
 
     result.rows.forEach(row => sheet.addRow(row));
+	
+	sheet.columns.forEach(column => {
+      let maxLength = 10;
+      column.eachCell({ includeEmpty: true }, cell => {
+        const val = cell.value ? cell.value.toString() : "";
+        maxLength = Math.max(maxLength, val.length);
+      });
+      column.width = maxLength + 2;
+    });
 
     res.setHeader(
       "Content-Type",
