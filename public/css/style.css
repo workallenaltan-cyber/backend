@@ -16,6 +16,8 @@ body {
   border-radius: 20px;
   padding: 20px 10px;
   transition: 0.3s;
+
+  position: relative; /* 👈 加这个！！！ */
 }
 
 /* 收起 */
@@ -117,12 +119,15 @@ input {
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   z-index: 999;
+  
+   position: relative;
 }
 
-/* 收起时 */
 .sidebar.collapsed .toggle-btn {
-  right: 0 + transform
+  right: 0;
+  transform: translateX(50%);
 }
+
 /* ===== 卡片 ===== */
 .card {
   background: white;
