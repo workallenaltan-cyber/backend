@@ -228,8 +228,11 @@ router.post("/check", verify, async (req, res) => {
 // =============================
 router.get("/all", verify, verifyAdmin, async (req, res) => { 
   try {
-    const result = await pool.query(
-      `SELECT 
+
+    const month = req.query.month; // ✅ 前端传来的 YYYY-MM
+
+    let sql = `
+      SELECT 
         attendance.employee_id,
         users.employee_name,
         company.company_name,
@@ -245,13 +248,22 @@ router.get("/all", verify, verifyAdmin, async (req, res) => {
       FROM attendance
       INNER JOIN users ON attendance.employee_id = users.employee_id
       LEFT JOIN company ON users.company_code = company.company_code
-      ORDER BY attendance.date DESC`
-    );
+    `;
+
+    // ✅ 有月份才过滤
+    if (month) {
+      sql += ` WHERE TO_CHAR(attendance.date, 'YYYY-MM') = $1`;
+    }
+
+    sql += ` ORDER BY attendance.date DESC`;
+
+    // ✅ PostgreSQL 参数写法
+    const result = await pool.query(sql, month ? [month] : []);
 
     res.json(result.rows);
 
   } catch (err) {
-    console.error(err);
+    console.error("❌ /api/all error:", err);
     res.status(500).json({ msg: "服务器错误" });
   }
 });
