@@ -400,7 +400,7 @@ function loadAll() {
 
       // ✅ 状态判断（加分🔥）
       let status = "正常";
-		let className = "on-time";
+		let className = "status-ok ";
 
 		// =====================
 		// ✅ 判断迟到（核心🔥）
@@ -419,7 +419,7 @@ function loadAll() {
 
 		  if (totalMin > late) {
 			status = "迟到";
-			className = "late";
+			className = "status-late";
 		  }
 		}
 
@@ -428,7 +428,7 @@ function loadAll() {
 		// =====================
 		if (!row.check_out_time) {
 		  status = "未下班";
-		  className = "late";
+		  className = "status-pending";
 		}
 
       table.innerHTML += `
