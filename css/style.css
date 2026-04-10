@@ -1,132 +1,11 @@
-/* =======================
-   🌈 全局风格（你现在的紫色系🔥）
-======================= */
+/* ===== 全局 ===== */
 body {
-  font-family: Arial, sans-serif;
-  background: #f5f6fa;
   margin: 0;
+  font-family: Arial;
+  background: #f5f6fa;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-/* =======================
-   📦 页面容器
-======================= */
-.container {
-  padding: 30px;
-}
-
-/* =======================
-   🏷️ 标题
-======================= */
-h1 {
-  margin-bottom: 20px;
-}
-
-/* =======================
-   🔘 按钮（统一风格🔥）
-======================= */
-.btn {
-  background: #5a67d8;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn:hover {
-  background: #434190;
-}
-
-/* =======================
-   📊 表格（你截图那种🔥）
-======================= */
-.table-container {
-  background: white;
-  padding: 20px;
-  border-radius: 20px;
-  overflow-x: auto;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-thead {
-  background: #f3f4f6;
-}
-
-tr:hover {
-  background: #f9fafb;
-}
-
-th, td {
-  padding: 12px;
-}
-
-/*table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background: #f1f1f1;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  font-size: 14px;
-}
-
-tr {
-  border-bottom: 1px solid #eee;
-}
-
-tr:hover {
-  background: #f9fafb;
-}*/
-
-/* =======================
-   🟢 状态标签
-======================= */
-.badge {
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-}
-
-.on-time {
-  background: #c6f6d5;
-  color: #22543d;
-}
-
-.late {
-  background: #fed7d7;
-  color: #742a2a;
-}
-
-/* =======================
-   🔴 迟到时间高亮（你要的🔥）
-======================= */
-.late-time {
-  color: red;
-  font-weight: bold;
-}
-
-/* =======================
-   📂 Sidebar（隐藏目录🔥）
-======================= */
+/* ===== Sidebar ===== */
 .sidebar {
   width: 220px;
   height: 100vh;
@@ -143,13 +22,24 @@ tr:hover {
   left: -240px;
 }
 
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
 .sidebar a {
   display: block;
   color: white;
-  margin: 15px 0;
   text-decoration: none;
+  margin: 15px 0;
+  padding: 8px;
+  border-radius: 8px;
 }
 
+.sidebar a:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ===== 主内容 ===== */
 .main {
   margin-left: 240px;
   padding: 20px;
@@ -160,14 +50,106 @@ tr:hover {
   margin-left: 0;
 }
 
-/* =======================
-   ☰ 按钮
-======================= */
+/* ===== 顶部栏 ===== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== 搜索框 ===== */
+input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* ===== 按钮 ===== */
+.btn {
+  background: #5a67d8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #434190;
+}
+
 .toggle-btn {
   background: #5a67d8;
   color: white;
   border: none;
   padding: 8px 12px;
-  cursor: pointer;
   border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ===== 卡片 ===== */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  overflow-x: auto;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background: #f3f4f6;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+tr {
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+  background: #f9fafb;
+}
+
+/* ===== 状态 ===== */
+.badge {
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.status-ok {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-late {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.status-pending {
+  background: #fefcbf;
+  color: #744210;
+}
+
+/* ===== 迟到时间 ===== */
+.late-time {
+  color: red;
+  font-weight: bold;
 }
