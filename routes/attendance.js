@@ -229,7 +229,18 @@ router.post("/check", verify, async (req, res) => {
 router.get("/all", verify, verifyAdmin, async (req, res) => { 
   try {
 
-    const month = req.query.month; // ✅ 前端传来的 YYYY-MM
+    let month = req.query.month; // ✅ 用 let
+
+    // ✅ 没传 → 默认上个月
+    if (!month) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - 1);
+
+      const year = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+
+      month = `${year}-${m}`;
+    }
 
     let sql = `
       SELECT 
@@ -248,26 +259,11 @@ router.get("/all", verify, verifyAdmin, async (req, res) => {
       FROM attendance
       INNER JOIN users ON attendance.employee_id = users.employee_id
       LEFT JOIN company ON users.company_code = company.company_code
+      WHERE TO_CHAR(attendance.date, 'YYYY-MM') = $1
+      ORDER BY attendance.date DESC
     `;
 
-    // ✅ 有月份才过滤
-    if (month) {
-      sql += ` WHERE TO_CHAR(attendance.date, 'YYYY-MM') = $1`;
-    }
-	 if (!month) {
-      const d = new Date();
-      d.setMonth(d.getMonth() - 1);
-
-      const year = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-
-      month = `${year}-${m}`; // 👉 变成 YYYY-MM
-    }
-
-    sql += ` ORDER BY attendance.date DESC`;
-
-    // ✅ PostgreSQL 参数写法
-    const result = await pool.query(sql, month ? [month] : []);
+    const result = await pool.query(sql, [month]);
 
     res.json(result.rows);
 

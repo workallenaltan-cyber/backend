@@ -19,9 +19,6 @@ function autoLogoutAfterWork() {
   }
 }
 
-function toggleMenu() {
-  document.querySelector(".sidebar").classList.toggle("active");
-}
 
 const links = document.querySelectorAll(".menu");
 const current = window.location.pathname;
