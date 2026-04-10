@@ -5,18 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <!-- ✅ favicon -->
-  <link rel="icon" type="image/png" href="/img/mnl_icon.png">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 
-<!-- ✅ Sidebar -->
+<link rel="icon" href="/img/mnl_icon.png">
+
 <div class="sidebar" id="sidebar">
-
-	<div id="sidebar" class="sidebar">
-
-	  <div class="logo">MNL</div>
+  <div class="logo">MNL</div>
 
 	  <a href="admin.html" class="menu active">
 		📊 <span>Dashboard</span>
@@ -33,12 +30,11 @@
 	  <a href="settings.html" class="menu">
 		⚙️ <span>设置</span>
 	  </a>
-
-	</div>
+</div>
 
 	<!-- Toggle Button -->
 	<div class="toggle-btn" onclick="toggleSidebar()">☰</div>
-</div>
+
 <!-- 主内容 -->
 <div id="main">
 
@@ -86,11 +82,16 @@
 // =====================
 // ✅ Sidebar 切换
 // =====================
-function toggleMenu() {
-  document.getElementById("sidebar").classList.toggle("hide");
-  document.getElementById("main").classList.toggle("full");
-}
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const main = document.getElementById("main");
+  const btn = document.querySelector(".toggle-btn");
 
+  sidebar.classList.toggle("collapsed");
+  main.classList.toggle("collapsed");
+
+  btn.innerHTML = sidebar.classList.contains("collapsed") ? "➡" : "☰";
+}
 
 
 // =====================
