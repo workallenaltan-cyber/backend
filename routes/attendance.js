@@ -281,6 +281,14 @@ router.get("/export", verify, verifyAdmin, async (req, res) => {
       LEFT JOIN company ON users.company_code = company.company_code
       ORDER BY attendance.date DESC`
     );
+	
+	
+    // ✅ 加月份过滤
+    if (month) {
+      sql += ` WHERE DATE_FORMAT(a.date, '%Y-%m') = ?`;
+    }
+	
+	const [rows] = await db.query(sql, month ? [month] : []);
 
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Attendance");

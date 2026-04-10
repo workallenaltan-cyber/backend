@@ -464,8 +464,17 @@ function loadAll() {
 /* =========================
    ✅ 导出 Excel（带 token）
 ========================= */
+
 function exportExcel() {
-  fetch(API + "/api/export", {
+  const token = localStorage.getItem("token");
+  const month = document.getElementById("monthFilter").value;
+
+  if (!month) {
+    alert("请选择月份");
+    return;
+  }
+
+  fetch(API + "/api/export?month=" + month, {   // ✅ 带参数
     headers: { "Authorization": "Bearer " + token }
   })
   .then(res => {
@@ -483,7 +492,7 @@ function exportExcel() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "attendance.xlsx";
+    a.download = `attendance_${month}.xlsx`;  // ✅ 文件名带月份
     a.click();
   });
 }
