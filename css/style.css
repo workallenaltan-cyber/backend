@@ -7,6 +7,13 @@ body {
   margin: 0;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 /* =======================
    📦 页面容器
 ======================= */
@@ -52,6 +59,24 @@ h1 {
 table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background: #f3f4f6;
+}
+
+tr:hover {
+  background: #f9fafb;
+}
+
+th, td {
+  padding: 12px;
+}
+
+/*table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
 thead {
@@ -70,7 +95,7 @@ tr {
 
 tr:hover {
   background: #f9fafb;
-}
+}*/
 
 /* =======================
    🟢 状态标签
