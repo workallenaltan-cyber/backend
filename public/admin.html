@@ -44,7 +44,6 @@
 
   <!-- 顶部 -->
   <div class="topbar">
-    <button class="toggle-btn" onclick="toggleMenu()">☰</button>
 
     <div class="top-actions">
       <input type="text" id="searchInput" placeholder="搜索员工..." onkeyup="filterTable()">
@@ -91,6 +90,8 @@ function toggleMenu() {
   document.getElementById("sidebar").classList.toggle("hide");
   document.getElementById("main").classList.toggle("full");
 }
+
+
 
 // =====================
 // ✅ 搜索过滤
