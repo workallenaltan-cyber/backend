@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
   <link rel="icon" href="/img/mnl_icon.png">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="/css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
 </head>
 
 <body>
@@ -46,7 +47,8 @@
   <div class="topbar">
 
     <div class="top-actions">
-	  <input type="month" id="monthFilter" class="input-month">
+
+	  <input type="text" id="monthFilter" class="input-month" placeholder="选择月份">
       <input type="text" id="searchInput" placeholder="搜索员工..." onkeyup="filterTable()">
       <button class="btn" onclick="exportExcel()">导出 Excel</button>
     </div>
@@ -119,6 +121,27 @@ function logout() {
   localStorage.clear();
   location.href = "index.html";
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const fp = flatpickr("#monthFilter", {
+    dateFormat: "Y-m",
+    plugins: [
+      new monthSelectPlugin({
+        shorthand: true,
+        dateFormat: "Y-m",
+        altFormat: "F Y"
+      })
+    ],
+    defaultDate: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    onChange: function(selectedDates, dateStr) {
+      loadAll(); // 自动刷新
+    }
+  });
+
+  window.fp = fp; // 给其他地方用
+
+});
 </script>
 
 </body>

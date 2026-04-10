@@ -369,10 +369,11 @@ function toggleSidebar() {
 // =====================
 // ✅ 加载全部记录（管理员🔥）
 // =====================
-function loadAll() {
+/*function loadAll() {
 
   const token = localStorage.getItem("token");
   if (!token) return;
+  
 
   fetch(API + "/api/all", {
     headers: {
@@ -449,6 +450,93 @@ function loadAll() {
     });
 
     // ❌ 没数据
+    if (data.length === 0) {
+      table.innerHTML = `<tr><td colspan="11">暂无数据</td></tr>`;
+    }
+
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("tableBody").innerHTML =
+      `<tr><td colspan="11">加载失败</td></tr>`;
+  });
+}*/
+
+function loadAll() {
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  // ✅ 获取月份（Flatpickr）
+  const month = document.getElementById("monthFilter")?.value;
+
+  let url = API + "/api/all";
+
+  if (month) {
+    url += "?month=" + month;
+  }
+
+  fetch(url, {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+
+    if (res.status === 401) {
+      localStorage.clear();
+      location.href = "index.html";
+      return;
+    }
+
+    return res.json();
+  })
+  .then(data => {
+
+    const table = document.getElementById("tableBody");
+    if (!table) return;
+
+    table.innerHTML = "";
+
+    data.forEach(row => {
+
+      let status = "正常";
+      let className = "status-ok";
+
+      // ✅ 判断迟到
+      if (row.check_in_time) {
+        const [hour, min] = row.check_in_time.split(":").map(Number);
+        const totalMin = hour * 60 + min;
+
+        if (totalMin > (8 * 60 + 30)) {
+          status = "迟到";
+          className = "status-late";
+        }
+      }
+
+      // ✅ 未下班优先
+      if (!row.check_out_time) {
+        status = "未下班";
+        className = "status-pending";
+      }
+
+      table.innerHTML += `
+        <tr>
+          <td>${row.employee_id}</td>
+          <td>${row.employee_name}</td>
+          <td>${row.company_name}</td>
+          <td>${row.adate}</td>
+          <td>${row.check_in_time}</td>
+          <td>${row.check_out_time || "-"}</td>
+          <td>${row.check_in_lat}, ${row.check_in_lng}</td>
+          <td>${row.check_out_lat || "-"}, ${row.check_out_lng || "-"}</td>
+          <td>${row.check_in_ip}</td>
+          <td>${row.check_out_ip || "-"}</td>
+          <td><span class="badge ${className}">${status}</span></td>
+        </tr>
+      `;
+    });
+
     if (data.length === 0) {
       table.innerHTML = `<tr><td colspan="11">暂无数据</td></tr>`;
     }

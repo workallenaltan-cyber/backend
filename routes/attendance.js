@@ -226,7 +226,7 @@ router.post("/check", verify, async (req, res) => {
 // =============================
 // ✅ 所有记录
 // =============================
-router.get("/all", verify, verifyAdmin, async (req, res) => { 
+/*router.get("/all", verify, verifyAdmin, async (req, res) => { 
   try {
     const result = await pool.query(
       `SELECT 
@@ -254,8 +254,79 @@ router.get("/all", verify, verifyAdmin, async (req, res) => {
     console.error(err);
     res.status(500).json({ msg: "服务器错误" });
   }
-});
+});*/
 
+
+router.get("/export", verify, verifyAdmin, async (req, res) => { 
+  try {
+
+    const month = req.query.month;
+
+    let sql = `
+      SELECT 
+        attendance.employee_id,
+        users.employee_name,
+        company.company_name,
+        TO_CHAR(attendance.date, 'DD/MM/YYYY') AS adate,
+        TO_CHAR(attendance.check_in_time, 'HH24:MI:SS') AS check_in_time,
+        TO_CHAR(attendance.check_out_time, 'HH24:MI:SS') AS check_out_time,
+        attendance.check_in_lat,
+        attendance.check_in_lng,
+        attendance.check_out_lat,
+        attendance.check_out_lng,
+        attendance.check_in_ip,
+        attendance.check_out_ip
+      FROM attendance
+      INNER JOIN users ON attendance.employee_id = users.employee_id
+      LEFT JOIN company ON users.company_code = company.company_code
+    `;
+
+    if (month) {
+      sql += ` WHERE TO_CHAR(attendance.date, 'YYYY-MM') = $1`;
+    }
+
+    sql += ` ORDER BY attendance.date DESC`;
+
+    const result = await pool.query(sql, month ? [month] : []);
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Attendance");
+
+    sheet.columns = [
+      { header: "员工ID", key: "employee_id" },
+      { header: "姓名", key: "employee_name" },
+      { header: "公司", key: "company_name" },
+      { header: "日期", key: "adate" },
+      { header: "上班时间", key: "check_in_time" },
+      { header: "下班时间", key: "check_out_time" },
+      { header: "上班纬度", key: "check_in_lat" },
+      { header: "上班经度", key: "check_in_lng" },
+      { header: "下班纬度", key: "check_out_lat" },
+      { header: "下班经度", key: "check_out_lng" },
+      { header: "上班IP", key: "check_in_ip" },
+      { header: "下班IP", key: "check_out_ip" }
+    ];
+
+    result.rows.forEach(row => sheet.addRow(row));
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=attendance_${month || "all"}.xlsx`
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("导出失败");
+  }
+});
 
 // =============================
 // ✅ 导出 Excel（支持 token🔥）
