@@ -641,6 +641,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (path.includes("index.html")) return;
 
   loadUserInfo();
+  loadAll();
 
   if (isAdmin) {
      flatpickr("#monthFilter", {
