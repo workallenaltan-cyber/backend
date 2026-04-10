@@ -16,8 +16,6 @@ body {
   border-radius: 20px;
   padding: 20px 10px;
   transition: 0.3s;
-
-  position: relative; /* 👈 加这个！！！ */
 }
 
 /* 收起 */
@@ -107,11 +105,11 @@ input {
   background: #434190;
 }
 
+/* ===== Toggle Button（修复版🔥） ===== */
 .toggle-btn {
-  position: absolute;   /* ✅ 保留这个 */
-  top: 20px;
-  right: 0;
-  transform: translateX(50%);
+  position: fixed;        /* ✅ 改成 fixed，最稳定 */
+  top: 30px;
+  left: 215px;            /* 跟 sidebar 贴边 */
   background: white;
   color: #5b6cff;
   border-radius: 10px;
@@ -119,11 +117,12 @@ input {
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   z-index: 999;
+  transition: 0.3s;
 }
 
-.sidebar.collapsed .toggle-btn {
-  right: 0;
-  transform: translateX(50%);
+/* 收起时按钮跟着移动 */
+.sidebar.collapsed ~ .toggle-btn {
+  left: 75px;
 }
 
 /* ===== 卡片 ===== */
@@ -187,4 +186,3 @@ tr:hover {
   color: red;
   font-weight: bold;
 }
-
