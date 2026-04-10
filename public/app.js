@@ -1,3 +1,25 @@
+// =====================
+// ✅ 自动登出（下班30分钟🔥）
+// =====================
+function autoLogoutAfterWork() {
+
+  const checkoutTime = localStorage.getItem("checkoutTime");
+  if (!checkoutTime) return;
+
+  const now = Date.now();
+  const diff = now - parseInt(checkoutTime);
+
+  const limit = 5 * 60 * 1000; // 30分钟
+
+  if (diff > limit) {
+    console.log("⛔ 超过30分钟，自动登出");
+
+    localStorage.clear();
+    location.href = "index.html";
+  }
+}
+
+
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const role = user.role;
 const isAdmin = role === "admin";
@@ -141,6 +163,11 @@ function check() {
       }
 
       if (data.status === "checkout") {
+
+		  // ✅ 记录下班时间（时间戳）
+		  localStorage.setItem("checkoutTime", Date.now());
+
+
         location.href = "done.html";
       }
 
@@ -451,6 +478,7 @@ function exportExcel() {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+	autoLogoutAfterWork();
 
   if (path.includes("index.html")) return;
 
@@ -466,4 +494,11 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTodayRecord();
   }
 
+});
+
+// =====================
+// ✅ 用户操作监听（🔥放这里）
+// =====================
+["click", "keydown", "touchstart"].forEach(evt => {
+  document.addEventListener(evt, autoLogoutAfterWork);
 });
