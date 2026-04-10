@@ -7,47 +7,69 @@ body {
 
 /* ===== Sidebar ===== */
 .sidebar {
-  width: 220px;
-  height: 100vh;
-  background: #5a67d8;
-  color: white;
   position: fixed;
-  left: 0;
-  top: 0;
-  padding: 20px;
+  left: 10px;
+  top: 10px;
+  width: 220px;
+  height: calc(100% - 20px);
+  background: linear-gradient(180deg, #5b6cff, #7b4dff);
+  border-radius: 20px;
+  padding: 20px 10px;
   transition: 0.3s;
 }
 
-.sidebar.hide {
-  left: -240px;
+/* 收起 */
+.sidebar.collapsed {
+  width: 70px;
 }
 
-.sidebar h2 {
-  margin-bottom: 20px;
-}
-
-.sidebar a {
-  display: block;
+/* LOGO */
+.sidebar .logo {
   color: white;
-  text-decoration: none;
-  margin: 15px 0;
-  padding: 8px;
-  border-radius: 8px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
 }
 
-.sidebar a:hover {
+/* 菜单 */
+.menu {
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+/* hover */
+.menu:hover {
   background: rgba(255,255,255,0.2);
 }
 
+/* active */
+.menu.active {
+  background: white;
+  color: #5b6cff;
+}
+
+/* 收起隐藏文字 */
+.sidebar.collapsed .menu span {
+  display: none;
+}
+
 /* ===== 主内容 ===== */
-.main {
-  margin-left: 240px;
-  padding: 20px;
+#main {
+  margin-left: 250px;
+  padding: 30px;
   transition: 0.3s;
 }
 
-.main.full {
-  margin-left: 0;
+/* 收起 */
+#main.collapsed {
+  margin-left: 100px;
 }
 
 /* ===== 顶部栏 ===== */
@@ -84,14 +106,21 @@ input {
 }
 
 .toggle-btn {
-  background: #5a67d8;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
+  position: fixed;
+  top: 20px;
+  left: 240px;
+  background: white;
+  color: #5b6cff;
+  border-radius: 10px;
+  padding: 6px 10px;
   cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+/* 收起时 */
+.sidebar.collapsed ~ .toggle-btn {
+  left: 90px;
+}
 /* ===== 卡片 ===== */
 .card {
   background: white;
@@ -154,97 +183,3 @@ tr:hover {
   font-weight: bold;
 }
 
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 220px;
-  height: 100%;
-  background: linear-gradient(180deg, #5b6cff, #7b4dff);
-  padding-top: 20px;
-  transition: 0.3s;
-  overflow: hidden;
-}
-
-/* 收起状态 */
-.sidebar.collapsed {
-  width: 70px;
-}
-
-/* Logo */
-.sidebar .logo {
-  color: white;
-  text-align: center;
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 30px;
-}
-
-/* 菜单 */
-.menu {
-  display: flex;
-  align-items: center;
-  color: white;
-  padding: 12px 20px;
-  text-decoration: none;
-  font-size: 15px;
-  transition: 0.2s;
-}
-
-.menu span {
-  margin-left: 10px;
-}
-
-/* hover */
-.menu:hover {
-  background: rgba(255,255,255,0.2);
-  border-radius: 8px;
-}
-
-/* active */
-.menu.active {
-  background: white;
-  color: #5b6cff;
-  border-radius: 8px;
-  margin: 0 10px;
-}
-
-/* 收起隐藏文字 */
-.sidebar.collapsed .menu span {
-  display: none;
-}
-
-.sidebar.collapsed .logo {
-  font-size: 16px;
-}
-
-/* 主内容 */
-#main {
-  margin-left: 220px;
-  transition: 0.3s;
-  padding: 20px;
-}
-
-/* 收起时主内容 */
-#main.collapsed {
-  margin-left: 70px;
-}
-
-/* 左上角按钮 */
-.toggle-btn {
-  position: fixed;
-  top: 15px;
-  left: 230px;
-  background: #5b6cff;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-/* 收起按钮位置 */
-.sidebar.collapsed ~ .toggle-btn {
-  left: 80px;
-}
