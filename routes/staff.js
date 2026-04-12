@@ -47,7 +47,7 @@ function verify(req, res, next) {
 // =============================
 // ✅ GET staff
 // =============================
-router.get("/staff", verify, verifyAdmin, async (req, res) => {
+router.get("/all", verify, verifyAdmin, async (req, res) => {
   try {
 
     const result = await pool.query(`
