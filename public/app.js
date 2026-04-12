@@ -783,8 +783,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		addBtn.addEventListener("click", openAddDialog);
 	  }
 
-});
-
+	});
+	loadStaff();
   } else {
     // ✅ staff 才执行打卡逻辑
     loadStatus();
