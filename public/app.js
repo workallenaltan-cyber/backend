@@ -405,7 +405,6 @@ function loadSidebarAuto() {
 
 function initPage() {
   loadSidebarAuto(); // 👈 高亮当前页面
-  loadStaff();
 }
 
 function openAddDialog() {

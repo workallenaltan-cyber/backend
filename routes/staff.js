@@ -46,7 +46,7 @@ function verify(req, res, next) {
 // =============================
 // ✅ GET staff
 // =============================
-router.get("/", verify, verifyAdmin, async (req, res) => {
+router.get("/loadstaff", verify, verifyAdmin, async (req, res) => {
   try {
     const adminId = req.user.id;
 
