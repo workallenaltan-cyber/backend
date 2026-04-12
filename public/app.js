@@ -405,6 +405,7 @@ function loadSidebarAuto() {
 
 function initPage() {
   loadSidebarAuto(); // 👈 高亮当前页面
+  loadStaff();
 }
 
 function openAddDialog() {
@@ -770,7 +771,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	  }
 
 	});
-	loadStaff();
+	
   } else {
     // ✅ staff 才执行打卡逻辑
     loadStatus();
