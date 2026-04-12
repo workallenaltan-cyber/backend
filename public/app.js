@@ -168,7 +168,7 @@ function check() {
 		// ✅ 恢复按钮
 		if (btn) {
 		  btn.disabled = false;
-		  btn.innerText = "Click Check In";
+		  btn.innerText = "CHECK IN";
 		}
 
 		return;
@@ -207,7 +207,7 @@ function check() {
       // ❌ 出错恢复按钮
       if (btn) {
         btn.disabled = false;
-        btn.innerText = "Click Check In";
+        btn.innerText = "CHECK IN";
       }
     });
 
@@ -217,7 +217,7 @@ function check() {
     // ❌ GPS失败恢复按钮
     if (btn) {
       btn.disabled = false;
-      btn.innerText = "Click Check In";
+      btn.innerText = "CHECK IN";
     }
   });
 }

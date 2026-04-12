@@ -140,7 +140,7 @@ router.post("/check", verify, async (req, res) => {
 	// ✅ 查询公司位置
 	// =============================
 	const companyRes = await pool.query(
-	  `SELECT c.lat, c.lng, c.radius
+	  `SELECT c.company_name,c.lat, c.lng, c.radius
 	   FROM users u
 	   JOIN company c ON u.company_code = c.company_code
 	   WHERE u.employee_id = $1`,
@@ -168,7 +168,7 @@ router.post("/check", verify, async (req, res) => {
 	// =============================
 	if (distance > company.radius) {
 	  return res.status(403).json({
-		msg: `Far from Workspace（${Math.round(distance)}m）`
+		msg: `Far from ${company.company_name} -（${Math.round(distance)}m）`
 		
 	  });
 	}
