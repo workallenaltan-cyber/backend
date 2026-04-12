@@ -374,6 +374,8 @@ function loadTodayRecord() {
     `;
   });
 }
+
+/*======================================Admin Control=====================================*/
 function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("collapsed");
   document.getElementById("main").classList.toggle("collapsed");
@@ -385,17 +387,17 @@ function loadSidebarAuto() {
     .then(html => {
       document.getElementById("sidebar-container").innerHTML = html;
 
-      const path = window.location.pathname;
+      const page = window.location.pathname.split("/").pop();
 
-      if (path.includes("admin")) {
-        document.getElementById("menu-dashboard")?.classList.add("active");
-      }
-      if (path.includes("mgt_staff")) {
-        document.getElementById("menu-staff")?.classList.add("active");
-      }
-      if (path.includes("mgt_company")) {
-        document.getElementById("menu-company")?.classList.add("active");
-      }
+		if (page === "admin.html") {
+		  document.getElementById("menu-dashboard")?.classList.add("active");
+		}
+		if (page === "mgt_staff.html") {
+		  document.getElementById("menu-staff")?.classList.add("active");
+		}
+		if (page === "mgt_company.html") {
+		  document.getElementById("menu-company")?.classList.add("active");
+		}
     });
 }
 
@@ -403,6 +405,16 @@ function initPage() {
   loadSidebarAuto(); // 👈 高亮当前页面
   loadStaff();
 }
+
+function openAddDialog() {
+  document.getElementById("staffModal").style.display = "block";
+
+  document.getElementById("modalTitle").innerText = "Add Staff";
+  document.getElementById("modalName").value = "";
+  document.getElementById("modalEmail").value = "";
+  document.getElementById("modalPassword").value = "";
+}
+/*===================================================================================*/
 /* =========================
    ✅ 加载数据
 ========================= */
@@ -699,6 +711,16 @@ document.addEventListener("DOMContentLoaded", () => {
 		  loadAll();
 		}
 	  });
+	  
+	  document.addEventListener("DOMContentLoaded", () => {
+
+	  const addBtn = document.querySelector(".btn");
+
+	  if (addBtn) {
+		addBtn.addEventListener("click", openAddDialog);
+	  }
+
+});
 
   } else {
     // ✅ staff 才执行打卡逻辑
