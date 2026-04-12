@@ -11,35 +11,8 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-
-<div class="sidebar" id="sidebar">
-
-	<div class="logo">
-	  <img src="mnl_icon.png" alt="MNL Logo">
-	</div>
-
-  <!-- ✅ 按钮放这里 -->
-
-  <div class="toggle-btn" onclick="toggleSidebar()">☰</div>
-
-  <a href="admin.html" class="menu active">
-    📊 <span>Dashboard</span>
-  </a>
-
-  <a href="employees.html" class="menu">
-    👥 <span>员工管理</span>
-  </a>
-
-  <a href="company.html" class="menu">
-    🏢 <span>公司管理</span>
-  </a>
-
-  <a href="settings.html" class="menu">
-    ⚙️ <span>设置</span>
-  </a>
-
-</div>
+<body onload="initPage()">
+<div id="sidebar-container"></div>
 
 	<!-- Toggle Button -->
 

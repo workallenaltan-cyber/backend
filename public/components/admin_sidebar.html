@@ -1,9 +1,19 @@
-<div class="sidebar">
-  <h2>Admin Panel</h2>
+<div class="sidebar" id="sidebar">
+	<div class="logo">
+	  <img src="mnl_icon.png" alt="MNL Logo">
+	</div>
+  <!-- ✅ 按钮放这里 -->
+								 
+  <a href="admin.html" class="menu active">
+    📊 <span>Dashboard</span>
+  </a>
 
-  <a href="admin.html" id="menu-dashboard">📊 Dashboard</a>
-  <a href="mgt_staff.html" id="menu-staff">👥 Staff Management</a>
-  <a href="records.html" id="menu-records">📋 Attendance</a>
+  <a href="mgt_staff.html" class="menu">
+    👥 <span>Staff Management</span>
+  </a>
 
-  <button onclick="logout()">🚪 Logout</button>
+  <a href="mgt_company.html" class="menu">
+    🏢 <span>Company Management</span>
+  </a>
+
 </div>

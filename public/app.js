@@ -378,6 +378,31 @@ function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("collapsed");
   document.getElementById("main").classList.toggle("collapsed");
 }
+
+function loadSidebarAuto() {
+  fetch("/components/admin_sidebar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("sidebar-container").innerHTML = html;
+
+      const path = window.location.pathname;
+
+      if (path.includes("admin")) {
+        document.getElementById("menu-dashboard")?.classList.add("active");
+      }
+      if (path.includes("mgt_staff")) {
+        document.getElementById("menu-staff")?.classList.add("active");
+      }
+      if (path.includes("mgt_company")) {
+        document.getElementById("menu-company")?.classList.add("active");
+      }
+    });
+}
+
+function initPage() {
+  loadSidebar("menu-staff"); // 👈 高亮当前页面
+  loadStaff();
+}
 /* =========================
    ✅ 加载数据
 ========================= */
@@ -657,6 +682,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadUserInfo();
   loadAll();
+
 
   if (isAdmin) {
      flatpickr("#monthFilter", {
