@@ -48,7 +48,6 @@ function verify(req, res, next) {
 // =============================
 router.get("/loadstaff", verify, verifyAdmin, async (req, res) => {
   try {
-    const adminId = req.user.id;
 
     const result = await pool.query(`
       SELECT u.employee_id,u.employee_name,u.role,c.company_code,c.company_name

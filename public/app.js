@@ -426,15 +426,22 @@ function loadStaff() {
     }
   })
   .then(res => {
+	  console.log("STATUS:", res.status);
 
-    if (res.status === 401) {
-      localStorage.clear();
-      location.href = "index.html";
-      return;
-    }
+	  if (res.status === 401) {
+		localStorage.clear();
+		location.href = "index.html";
+		return;
+	  }
 
-    return res.json();
-  })
+	  if (!res.ok) {
+		return res.text().then(text => {
+		  throw new Error(text);
+		});
+	  }
+
+	  return res.json();
+	})
   .then(data => {
 
     const table = document.getElementById("staffTable");
