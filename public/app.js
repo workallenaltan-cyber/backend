@@ -380,7 +380,7 @@ function toggleSidebar() {
 }
 
 function loadSidebarAuto() {
-  fetch("/components/admin_sidebar.html")
+  fetch("./components/admin_sidebar.html")
     .then(res => res.text())
     .then(html => {
       document.getElementById("sidebar-container").innerHTML = html;
