@@ -400,7 +400,7 @@ function loadSidebarAuto() {
 }
 
 function initPage() {
-  loadSidebar("menu-staff"); // 👈 高亮当前页面
+  loadSidebarAuto(); // 👈 高亮当前页面
   loadStaff();
 }
 /* =========================
