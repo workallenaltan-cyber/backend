@@ -770,7 +770,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	  }
 
 	});
-	//loadStaff();
+	loadStaff();
   } else {
     // ✅ staff 才执行打卡逻辑
     loadStatus();
