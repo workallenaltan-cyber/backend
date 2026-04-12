@@ -458,6 +458,10 @@ function loadStaff() {
 			  <td>${user.role}</td>
 			  <td>${user.company_code}</td>
 			  <td>${user.company_name}</td>
+			    <td>
+				  <button onclick="editStaff(${user.id}, '${user.employee_name}', '${user.role}')">✏️</button>
+				  <button onclick="deleteStaff(${user.id})">🗑</button>
+				</td>
 			</tr>
 		  `;
 		});
