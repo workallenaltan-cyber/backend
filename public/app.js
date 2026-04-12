@@ -454,8 +454,10 @@ function loadStaff() {
       table.innerHTML += `
         <tr>
           <td>${user.employee_id}</td>
-          <td>${user.name}</td>
-          <td>${user.email || "-"}</td>
+          <td>${user.employee_name}</td>
+          <td>${user.role}</td>
+		  <td>${user.company_code}</td>
+		  <td>${user.company_name}</td>
           <td>
             <button onclick="openEditDialog('${user.id}','${user.name}','${user.email}')">Edit</button>
             <button onclick="openPasswordDialog('${user.id}')">Password</button>
@@ -752,6 +754,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadUserInfo();
   loadAll();
+  loadStaff();
 
 
   if (isAdmin) {
