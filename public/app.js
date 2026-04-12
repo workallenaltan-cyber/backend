@@ -669,13 +669,13 @@ document.addEventListener("DOMContentLoaded", () => {
 	  });
 	  
 
+
 	  const addBtn = document.querySelector(".btn");
 
 	  if (addBtn) {
 		addBtn.addEventListener("click", openAddDialog);
+	  }
 
-
-	});
 	
   } else {
     // ✅ staff 才执行打卡逻辑
