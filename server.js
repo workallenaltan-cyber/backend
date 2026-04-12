@@ -17,4 +17,4 @@ app.use(express.static("public"));
 // routes
 app.use("/api", require("./routes/auth"));
 app.use("/api", require("./routes/attendance"));
-app.use("/api", require("./routes/attendance"));
+app.use("/api", require("./routes/staff"));
