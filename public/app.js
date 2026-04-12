@@ -420,7 +420,7 @@ function loadStaff() {
   const token = localStorage.getItem("token");
   console.log("TOKEN:", token);
 
-  fetch(API + "/api/staff", {
+  fetch(API + "/api/staffload", {
     headers: {
       "Authorization": "Bearer " + token
     }

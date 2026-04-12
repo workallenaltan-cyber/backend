@@ -47,7 +47,7 @@ function verify(req, res, next) {
 // =============================
 // ✅ GET staff
 // =============================
-router.get("/all", verify, verifyAdmin, async (req, res) => {
+router.get("/staffload", verify, verifyAdmin, async (req, res) => {
   try {
 
     const result = await pool.query(`
@@ -63,6 +63,8 @@ router.get("/all", verify, verifyAdmin, async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 });
+
+
 
 // =============================
 // ✅ ADD
