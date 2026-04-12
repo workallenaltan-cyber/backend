@@ -650,7 +650,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (isAdmin) {
 	  
-	    loadStaff();
+	  document.addEventListener("DOMContentLoaded", () => {
+		  loadStaff();
+		});
 		
      flatpickr("#monthFilter", {
 		dateFormat: "Y-m",
