@@ -170,10 +170,6 @@ router.post("/check", verify, async (req, res) => {
 	  return res.status(403).json({
 		msg: `Far from Workspace（${Math.round(distance)}m）`
 		
-		// ✅ 关键：恢复按钮
-      btn.disabled = false;
-      btn.innerText = "Check In";
-      return;
 	  });
 	}
 
