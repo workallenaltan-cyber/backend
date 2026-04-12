@@ -5,47 +5,9 @@ const verify = require("../middleware/verify"); // JWT验证
 const bcrypt = require("bcryptjs");
 
 // =============================
-// ✅ Token 验证（最终版🔥）
-// =============================
-function verify(req, res, next) {
-  try {
-    const authHeader = req.headers.authorization || req.headers.Authorization;
-
-    // ✅ 支持 URL token（给 Excel 用）
-    let token = null;
-
-    if (authHeader) {
-      const parts = authHeader.split(" ");
-      if (parts.length === 2 && parts[0] === "Bearer") {
-        token = parts[1];
-      }
-    }
-
-    // 👉 fallback（export 用）
-    if (!token && req.query.token) {
-      token = req.query.token;
-    }
-
-    if (!token) {
-      return res.status(401).json({ msg: "未登录" });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = decoded;
-
-    next();
-
-  } catch (err) {
-    console.error("❌ TOKEN ERROR:", err.message);
-    return res.status(401).json({ msg: "token 无效或已过期" });
-  }
-}
-
-// =============================
 // ✅ GET staff
 // =============================
-router.get("/staff", verify, async (req, res) => {
+router.get("/staff", verify, verifyAdmin, async (req, res) => { 
   try {
 
     const adminId = req.user.id;
@@ -67,7 +29,7 @@ router.get("/staff", verify, async (req, res) => {
 // =============================
 // ✅ ADD staff
 // =============================
-router.post("/", verify, async (req, res) => {
+router.post("/", verify, verifyAdmin, async (req, res) => { 
   try {
     const { name, email, password } = req.body;
     const adminId = req.user.id;
@@ -106,7 +68,7 @@ router.post("/", verify, async (req, res) => {
 // =============================
 // ✅ UPDATE
 // =============================
-router.put("/:id", verify, async (req, res) => {
+router.put("/:id", verify, verifyAdmin, async (req, res) => { 
   const { name, email } = req.body;
 
   await pool.query(
@@ -120,7 +82,7 @@ router.put("/:id", verify, async (req, res) => {
 // =============================
 // ✅ PASSWORD
 // =============================
-router.put("/password/:id", verify, async (req, res) => {
+router.put("/password/:id", verify, verifyAdmin, async (req, res) => { 
   const { password } = req.body;
   const hashed = await bcrypt.hash(password, 10);
 
@@ -135,7 +97,7 @@ router.put("/password/:id", verify, async (req, res) => {
 // =============================
 // ✅ DELETE（可选🔥）
 // =============================
-router.delete("/:id", verify, async (req, res) => {
+router.delete("/:id", verify, verifyAdmin, async (req, res) => { 
   await pool.query(
     "DELETE FROM users WHERE id=$1",
     [req.params.id]
@@ -143,5 +105,16 @@ router.delete("/:id", verify, async (req, res) => {
 
   res.json({ msg: "Deleted" });
 });
+
+// =============================
+// ✅ Admin 权限验证
+// =============================
+function verifyAdmin(req, res, next) {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({ msg: "无权限" });
+  }
+  next();
+}
+
 
 module.exports = router;
