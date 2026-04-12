@@ -69,7 +69,7 @@ if (path.includes("index.html")) {
   // ✅ 非 admin 禁止进 admin 页面
   if (path.includes("admin.html") && !isAdmin) {
     alert("无权限");
-    location.href = "checkin.html";
+    location.href = "index.html";
   }
 
 }

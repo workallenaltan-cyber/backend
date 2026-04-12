@@ -8,31 +8,58 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body onload="loadStaff()">
+<body>
 
 <!-- ================= Sidebar ================= -->
-<div class="sidebar">
-  <h2>Admin Panel</h2>
+<div class="sidebar" id="sidebar">
+											
 
-  <a href="admin.html">📊 Dashboard</a>
-  <a href="mgt_staff.html" class="active">👥 Staff Management</a>
-  <a href="records.html">📋 Attendance</a>
+	<div class="logo">
+	  <img src="mnl_icon.png" alt="MNL Logo">
+	</div>
 
-  <button onclick="logout()">🚪 Logout</button>
+  <!-- ✅ 按钮放这里 -->
+													 
+
+  <div class="toggle-btn" onclick="toggleSidebar()">☰</div>
+								 
+   
+ 
+
+  <a href="admin.html" class="menu active">
+    📊 <span>Dashboard</span>
+  </a>
+
+  <a href="employees.html" class="menu">
+    👥 <span>员工管理</span>
+  </a>
+
+  <a href="company.html" class="menu">
+    🏢 <span>公司管理</span>
+  </a>
+   
+   
+
+  <a href="settings.html" class="menu">
+    ⚙️ <span>设置</span>
+  </a>
+
 </div>
 
 <!-- ================= Main ================= -->
-<div class="main">
+<div id="main">
+  <!-- 顶部 -->
+  <div class="topbar">
 
-  <!-- Header -->
-  <div class="header">
-    <h2>Staff Management</h2>
-    <button onclick="openAddDialog()">+ Add Staff</button>
+    <div class="top-actions">
+	  <h2>Staff Management</h2>
+	  <button onclick="openAddDialog()">+ Add Staff</button>
+    </div>
   </div>
 
   <!-- Table -->
   <div class="card">
-    <table>
+    <table id="dataaTable">
       <thead>
         <tr>
           <th>Employee ID</th>
@@ -41,7 +68,9 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="staffTable"></tbody>
+      <tbody id="staffTable">
+		 <tr><td colspan="11">加载中...</td></tr>
+	  </tbody>
     </table>
   </div>
 
