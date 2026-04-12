@@ -405,7 +405,7 @@ function loadSidebarAuto() {
 
 function initPage() {
   loadSidebarAuto(); // 👈 高亮当前页面
-  loadStaff();
+
 }
 
 function openAddDialog() {
@@ -463,105 +463,7 @@ function loadStaff() {
     console.error("❌ ERROR:", err);
   });
 }
-/*===================================================================================*/
-/* =========================
-   ✅ 加载数据
-========================= */
-// =====================
-// ✅ 加载全部记录（管理员🔥）
-// =====================
-/*function loadAll() {
 
-  const token = localStorage.getItem("token");
-  if (!token) return;
-  
-
-  fetch(API + "/api/all", {
-    headers: {
-      "Authorization": "Bearer " + token
-    }
-  })
-  .then(res => {
-
-    if (res.status === 401) {
-      localStorage.clear();
-      location.href = "index.html";
-      return;
-    }
-
-    return res.json();
-  })
-  .then(data => {
-
-    const table = document.getElementById("tableBody");
-    if (!table) return;
-
-    table.innerHTML = "";
-
-    data.forEach(row => {
-
-      // ✅ 状态判断（加分🔥）
-      let status = "正常";
-		let className = "status-ok ";
-
-		// =====================
-		// ✅ 判断迟到（核心🔥）
-		// =====================
-		if (row.check_in_time) {
-
-		  const time = row.check_in_time.split(":");
-		  const hour = parseInt(time[0]);
-		  const min = parseInt(time[1]);
-
-		  // 转成分钟
-		  const totalMin = hour * 60 + min;
-
-		  const start = 8 * 60;       // 08:00
-		  const late = 8 * 60 + 30;   // 08:30
-
-		  if (totalMin > late) {
-			status = "迟到";
-			className = "status-late";
-		  }
-		}
-
-		// =====================
-		// ✅ 未下班优先
-		// =====================
-		if (!row.check_out_time) {
-		  status = "未下班";
-		  className = "status-pending";
-		}
-
-      table.innerHTML += `
-        <tr>
-          <td>${row.employee_id}</td>
-          <td>${row.employee_name}</td>
-          <td>${row.company_name}</td>
-          <td>${row.adate}</td>
-          <td>${row.check_in_time}</td>
-          <td>${row.check_out_time || "-"}</td>
-          <td>${row.check_in_lat}, ${row.check_in_lng}</td>
-          <td>${row.check_out_lat || "-"}, ${row.check_out_lng || "-"}</td>
-          <td>${row.check_in_ip}</td>
-          <td>${row.check_out_ip || "-"}</td>
-          <td><span class="badge ${className}">${status}</span></td>
-        </tr>
-      `;
-    });
-
-    // ❌ 没数据
-    if (data.length === 0) {
-      table.innerHTML = `<tr><td colspan="11">暂无数据</td></tr>`;
-    }
-
-  })
-  .catch(err => {
-    console.error(err);
-    document.getElementById("tableBody").innerHTML =
-      `<tr><td colspan="11">加载失败</td></tr>`;
-  });
-}*/
 
 function loadAll() {
 
@@ -747,6 +649,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   if (isAdmin) {
+	  
+	    loadStaff();
+		
      flatpickr("#monthFilter", {
 		dateFormat: "Y-m",
 		plugins: [
