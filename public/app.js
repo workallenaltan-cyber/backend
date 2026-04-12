@@ -151,16 +151,31 @@ function check() {
         lng: pos.coords.longitude
       })
     })
-    .then(res => {
+    .then(async res => {
 
-      if (res.status === 401) {
-        localStorage.clear();
-        location.href = "index.html";
-        return;
-      }
+	  if (res.status === 401) {
+		localStorage.clear();
+		location.href = "index.html";
+		return;
+	  }
 
-      return res.json();
-    })
+	  const data = await res.json();
+
+	  // ❌ 关键：处理非200
+	  if (!res.ok) {
+		alert(data.msg || "打卡失败");
+
+		// ✅ 恢复按钮
+		if (btn) {
+		  btn.disabled = false;
+		  btn.innerText = "Click Check In";
+		}
+
+		return;
+	  }
+
+	  return data;
+	})
     .then(data => {
       if (!data) return;
 
