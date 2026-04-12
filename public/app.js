@@ -447,15 +447,23 @@ function loadStaff() {
     table.innerHTML = "";
 
     data.forEach(user => {
-      table.innerHTML += `
-        <tr>
-          <td>${user.employee_id}</td>
-          <td>${user.employee_name}</td>
-          <td>${user.role}</td>
-          <td>${user.company_code}</td>
-          <td>${user.company_name}</td>
-        </tr>
-      `;
+		
+		let html = "";
+
+		data.forEach(user => {
+		  html += `
+			<tr>
+			  <td>${user.employee_id}</td>
+			  <td>${user.employee_name}</td>
+			  <td>${user.role}</td>
+			  <td>${user.company_code}</td>
+			  <td>${user.company_name}</td>
+			</tr>
+		  `;
+		});
+
+		table.innerHTML = html;
+
     });
 
   })
