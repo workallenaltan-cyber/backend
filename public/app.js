@@ -458,10 +458,6 @@ function loadStaff() {
           <td>${user.role}</td>
 		  <td>${user.company_code}</td>
 		  <td>${user.company_name}</td>
-          <td>
-            <button onclick="openEditDialog('${user.id}','${user.name}','${user.email}')">Edit</button>
-            <button onclick="openPasswordDialog('${user.id}')">Password</button>
-          </td>
         </tr>
       `;
     });
