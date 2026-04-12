@@ -650,9 +650,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (isAdmin) {
 	  
-	  document.addEventListener("DOMContentLoaded", () => {
-		  loadStaff();
-		});
+
+	loadStaff();
 		
      flatpickr("#monthFilter", {
 		dateFormat: "Y-m",
@@ -669,13 +668,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	  });
 	  
-	  document.addEventListener("DOMContentLoaded", () => {
 
 	  const addBtn = document.querySelector(".btn");
 
 	  if (addBtn) {
 		addBtn.addEventListener("click", openAddDialog);
-	  }
+
 
 	});
 	
