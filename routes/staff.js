@@ -51,9 +51,9 @@ router.get("/", verify, verifyAdmin, async (req, res) => {
     const adminId = req.user.id;
 
     const result = await pool.query(`
-      SELECT id, employee_id, name, email
-      FROM users
-      ORDER BY employee_id ASC
+      SELECT u.employee_id,u.employee_name,u.role,c.company_code,c.company_name
+	   FROM users u
+	   JOIN company c ON u.company_code = c.company_code
     `);
 
     res.json(result.rows);
