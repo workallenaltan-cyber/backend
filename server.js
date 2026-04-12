@@ -15,5 +15,5 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // routes
-app.use("/api", require("./routes/staff"));
+app.use("/api", require("./routes/auth"));
 app.use("/api", require("./routes/attendance"));

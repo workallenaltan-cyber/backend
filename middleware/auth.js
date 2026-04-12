@@ -1,38 +1,20 @@
-// =============================
-// ✅ Token 验证（最终版🔥）
-// =============================
-function verify(req, res, next) {
-  try {
-    const authHeader = req.headers.authorization || req.headers.Authorization;
+const jwt = require("jsonwebtoken");
 
-    // ✅ 支持 URL token（给 Excel 用）
-    let token = null;
+module.exports = function (req, res, next) {
+  const authHeader = req.headers.authorization;
 
-    if (authHeader) {
-      const parts = authHeader.split(" ");
-      if (parts.length === 2 && parts[0] === "Bearer") {
-        token = parts[1];
-      }
-    }
-
-    // 👉 fallback（export 用）
-    if (!token && req.query.token) {
-      token = req.query.token;
-    }
-
-    if (!token) {
-      return res.status(401).json({ msg: "未登录" });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = decoded;
-
-    next();
-
-  } catch (err) {
-    console.error("❌ TOKEN ERROR:", err.message);
-    return res.status(401).json({ msg: "token 无效或已过期" });
+  if (!authHeader) {
+    return res.status(401).json({ message: "未登录" });
   }
-}
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(401).json({ message: "token 无效" });
+  }
+};
 
