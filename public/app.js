@@ -387,17 +387,19 @@ function loadSidebarAuto() {
     .then(html => {
       document.getElementById("sidebar-container").innerHTML = html;
 
-      const page = window.location.pathname.split("/").pop();
+      // ✅ 当前页面
+      const currentPage = window.location.pathname.split("/").pop();
 
-		if (page === "admin.html") {
-		  document.getElementById("menu-dashboard")?.classList.add("active");
-		}
-		if (page === "mgt_staff.html") {
-		  document.getElementById("menu-staff")?.classList.add("active");
-		}
-		if (page === "mgt_company.html") {
-		  document.getElementById("menu-company")?.classList.add("active");
-		}
+      // ✅ 找全部 menu
+      const links = document.querySelectorAll(".menu");
+
+      links.forEach(link => {
+        const href = link.getAttribute("href");
+
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
     });
 }
 
