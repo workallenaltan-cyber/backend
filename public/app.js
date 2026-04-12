@@ -410,11 +410,67 @@ function initPage() {
 
 function openAddDialog() {
   document.getElementById("staffModal").style.display = "block";
-
   document.getElementById("modalTitle").innerText = "Add Staff";
   document.getElementById("modalName").value = "";
   document.getElementById("modalEmail").value = "";
   document.getElementById("modalPassword").value = "";
+}
+
+function loadStaff() {
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  fetch(API + "/api/staff", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+
+    if (res.status === 401) {
+      localStorage.clear();
+      location.href = "index.html";
+      return;
+    }
+
+    return res.json();
+  })
+  .then(data => {
+
+    const table = document.getElementById("staffTable");
+    if (!table) return;
+
+    table.innerHTML = "";
+
+    // ❌ 没数据
+    if (!data || data.length === 0) {
+      table.innerHTML = `<tr><td colspan="4">No staff found</td></tr>`;
+      return;
+    }
+
+    // ✅ 渲染数据
+    data.forEach(user => {
+      table.innerHTML += `
+        <tr>
+          <td>${user.employee_id}</td>
+          <td>${user.name}</td>
+          <td>${user.email || "-"}</td>
+          <td>
+            <button onclick="openEditDialog('${user.id}','${user.name}','${user.email}')">Edit</button>
+            <button onclick="openPasswordDialog('${user.id}')">Password</button>
+          </td>
+        </tr>
+      `;
+    });
+
+  })
+  .catch(err => {
+    console.error(err);
+
+    document.getElementById("staffTable").innerHTML =
+      `<tr><td colspan="4">Load failed</td></tr>`;
+  });
 }
 /*===================================================================================*/
 /* =========================
