@@ -5,6 +5,44 @@ const verify = require("../middleware/verify"); // JWT验证
 const bcrypt = require("bcryptjs");
 
 // =============================
+// ✅ Token 验证（最终版🔥）
+// =============================
+function verify(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+
+    // ✅ 支持 URL token（给 Excel 用）
+    let token = null;
+
+    if (authHeader) {
+      const parts = authHeader.split(" ");
+      if (parts.length === 2 && parts[0] === "Bearer") {
+        token = parts[1];
+      }
+    }
+
+    // 👉 fallback（export 用）
+    if (!token && req.query.token) {
+      token = req.query.token;
+    }
+
+    if (!token) {
+      return res.status(401).json({ msg: "未登录" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.user = decoded;
+
+    next();
+
+  } catch (err) {
+    console.error("❌ TOKEN ERROR:", err.message);
+    return res.status(401).json({ msg: "token 无效或已过期" });
+  }
+}
+
+// =============================
 // ✅ GET staff
 // =============================
 router.get("/staff", verify, async (req, res) => {
@@ -16,11 +54,7 @@ router.get("/staff", verify, async (req, res) => {
     const result = await pool.query(`
       SELECT id, employee_id, name, email
       FROM users
-      WHERE company_code = (
-        SELECT company_code FROM users WHERE id = $1
-      )
-      ORDER BY employee_id ASC
-    `, [adminId]);
+      ORDER BY employee_id ASC`);
 
     res.json(result.rows);
 
