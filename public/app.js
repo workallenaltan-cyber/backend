@@ -418,62 +418,48 @@ function openAddDialog() {
 function loadStaff() {
 
   const token = localStorage.getItem("token");
-  if (!token) return;
+  console.log("TOKEN:", token);
 
   fetch(API + "/api/staff/loadStaff", {
     headers: {
       "Authorization": "Bearer " + token
     }
   })
-  .then(res => {
-	  console.log("STATUS:", res.status);
+  .then(async res => {
 
-	  if (res.status === 401) {
-		localStorage.clear();
-		location.href = "index.html";
-		return;
-	  }
+    console.log("STATUS:", res.status);
 
-	  if (!res.ok) {
-		return res.text().then(text => {
-		  throw new Error(text);
-		});
-	  }
+    const text = await res.text();
+    console.log("RAW RESPONSE:", text);
 
-	  return res.json();
-	})
-  .then(data => {
-
-    const table = document.getElementById("staffTable");
-    if (!table) return;
-
-    table.innerHTML = "";
-
-    // ❌ 没数据
-    if (!data || data.length === 0) {
-      table.innerHTML = `<tr><td colspan="4">No staff found</td></tr>`;
-      return;
+    if (!res.ok) {
+      throw new Error(text);
     }
 
-    // ✅ 渲染数据
+    return JSON.parse(text);
+  })
+  .then(data => {
+
+    console.log("DATA:", data);
+
+    const table = document.getElementById("staffTable");
+    table.innerHTML = "";
+
     data.forEach(user => {
       table.innerHTML += `
         <tr>
           <td>${user.employee_id}</td>
           <td>${user.employee_name}</td>
           <td>${user.role}</td>
-		  <td>${user.company_code}</td>
-		  <td>${user.company_name}</td>
+          <td>${user.company_code}</td>
+          <td>${user.company_name}</td>
         </tr>
       `;
     });
 
   })
   .catch(err => {
-    console.error(err);
-
-    document.getElementById("staffTable").innerHTML =
-      `<tr><td colspan="4">Load failed</td></tr>`;
+    console.error("❌ ERROR:", err);
   });
 }
 /*===================================================================================*/
