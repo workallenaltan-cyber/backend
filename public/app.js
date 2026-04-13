@@ -86,40 +86,52 @@ async function login() {
     return;
   }
 
-  try {
-    const res = await fetch(API + "/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ employeeId, password })
-    });
+  // ✅ 先获取 GPS
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
 
-    const data = await res.json();
+    try {
+      const res = await fetch(API + "/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ employeeId, password, lat, lng })
+      });
 
-    if (data.status === "success") {
+      const data = await res.json();
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      if (data.status === "success") {
 
-      alert("登录成功");
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
+        // ✅ 存分行
+        localStorage.setItem("branch", data.branch);
 
-		  // ✅ 根据角色跳转
-		  if (data.user.role === "admin") {
-			location.href = "admin.html";
-		  } else {
-			location.href = "checkin.html";
-		  }
+        // ✅ 显示分行
+        alert("登录成功 @ " + data.branch);
 
-    } else {
-      alert(data.message || "账号或密码错误");
+        // ✅ 跳转
+        if (data.user.role === "admin") {
+          location.href = "admin.html";
+        } else {
+          location.href = "checkin.html";
+        }
+
+      } else {
+        alert(data.message || "登录失败");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("服务器错误");
     }
 
-  } catch (err) {
-    console.error(err);
-    alert("服务器错误");
-  }
+  }, () => {
+    alert("❌ 请开启GPS才能登录");
+  });
 }
 
 
@@ -276,6 +288,7 @@ function loadStatus() {
 function loadUserInfo() {
 
   const userStr = localStorage.getItem("user");
+  const company = localStorage.getItem("company") || "-";
   if (!userStr) return;
 
   const user = JSON.parse(userStr);
@@ -286,7 +299,7 @@ function loadUserInfo() {
   el.innerHTML = `
     <div style="text-align:center;">
       <h2 style="background:#5a67d8;color:white;padding:10px;border-radius:8px;">
-        ${user.company}
+        ${company}
       </h2>
       <p><strong>${user.employeeId} - ${user.name}</strong></p>
     </div>

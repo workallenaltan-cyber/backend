@@ -48,12 +48,15 @@ const authMiddleware = (req, res, next) => {
 
 
 // =====================
-// ✅ 登录 API（最终版🔥）
+// ✅ 登录 + GPS + 分行判断（终极版🔥）
 // =====================
 router.post("/login", async (req, res) => {
   try {
-    let { employeeId, password } = req.body;
+    let { employeeId, password, lat, lng, accuracy } = req.body;
 
+    // =====================
+    // ❌ 基本检查
+    // =====================
     if (!employeeId || !password) {
       return res.status(400).json({
         status: "fail",
@@ -63,8 +66,29 @@ router.post("/login", async (req, res) => {
 
     employeeId = employeeId.trim().toUpperCase();
 
+    // =====================
+    // ❌ GPS检查
+    // =====================
+    if (!lat || !lng) {
+      return res.status(400).json({
+        status: "fail",
+        message: "必须开启GPS"
+      });
+    }
+
+    // （可选）GPS 精度检测
+    if (accuracy && accuracy > 100) {
+      return res.status(400).json({
+        status: "fail",
+        message: "GPS不准确，请到户外重试"
+      });
+    }
+
+    // =====================
+    // ✅ 查询用户
+    // =====================
     const result = await pool.query(
-      `SELECT u.employee_id, u.employee_name, u.password, c.company_name,u.role
+      `SELECT u.employee_id, u.employee_name, u.password, c.company_name, u.role
        FROM public.users u
        INNER JOIN public.company c 
        ON u.company_code = c.company_code
@@ -81,6 +105,9 @@ router.post("/login", async (req, res) => {
 
     const user = result.rows[0];
 
+    // =====================
+    // ❌ 密码验证
+    // =====================
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
@@ -90,6 +117,72 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    // =====================
+    // ✅ 查询所有分行
+    // =====================
+    const companyResult = await pool.query("SELECT * FROM company");
+
+    if (companyResult.rows.length === 0) {
+      return res.status(500).json({
+        status: "error",
+        message: "未设置分行数据"
+      });
+    }
+
+    // =====================
+    // ✅ 距离计算函数
+    // =====================
+    function getDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371000;
+      const toRad = deg => deg * Math.PI / 180;
+
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLng / 2) ** 2;
+
+      return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    let matchedcompany = null;
+    let nearest = null;
+    let minDistance = Infinity;
+
+    // =====================
+    // 🔍 遍历分行
+    // =====================
+    for (let b of companyResult.rows) {
+      const dist = getDistance(lat, lng, b.lat, b.lng);
+
+      // 最近分行
+      if (dist < minDistance) {
+        minDistance = dist;
+        nearest = b;
+      }
+
+      // 在范围内
+      if (dist <= b.radius) {
+        matchedcompany = b;
+      }
+    }
+
+    // =====================
+    // ❌ 不在任何分行范围
+    // =====================
+    if (!matchedcompany) {
+      return res.status(403).json({
+        status: "fail",
+        message: `❌ 不在分行范围，最近：${nearest.name} (${Math.round(minDistance)}m)`
+      });
+    }
+
+    // =====================
+    // ❌ JWT 检查
+    // =====================
     if (!process.env.JWT_SECRET) {
       console.error("❌ JWT_SECRET 未设置");
       return res.status(500).json({
@@ -98,28 +191,37 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    // =====================
+    // ✅ 生成 Token
+    // =====================
     const token = jwt.sign(
       {
         id: user.employee_id,
         name: user.employee_name,
-        company: user.company_name,
-		role: user.role
+        //company: user.company_name,
+        role: user.role,
+        company: matchedcompany.name
       },
       process.env.JWT_SECRET,
       { expiresIn: "8h" }
     );
 
-    console.log("✅ 登录成功:", user.employee_id);
+    console.log("✅ 登录成功:", user.employee_id, "@", matchedcompany.name);
 
+    // =====================
+    // ✅ 返回
+    // =====================
     res.json({
       status: "success",
       message: "登录成功",
       token,
+      company: matchedcompany.name,
+      distance: Math.round(minDistance),
       user: {
         employeeId: user.employee_id,
         name: user.employee_name,
-        company: user.company_name,
-		role: user.role
+        //company: user.company_name,
+        role: user.role
       }
     });
 
