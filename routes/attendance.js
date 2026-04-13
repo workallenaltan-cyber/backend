@@ -188,7 +188,7 @@ router.post("/check", verify, async (req, res) => {
 
       return res.json({
         status: "checkin",
-		msg: "上班打卡成功 @ ${matchedCompany.company_name}"
+		msg: `上班打卡成功 @ ${matchedCompany.company_name}`
       });
     }
 
@@ -210,7 +210,7 @@ router.post("/check", verify, async (req, res) => {
 
       return res.json({
         status: "checkout",
-        msg: "下班打卡成功 @ ${matchedCompany.company_name}"
+        msg: `下班打卡成功 @ ${matchedCompany.company_name}`
       });
     }
 
