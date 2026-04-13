@@ -136,39 +136,42 @@ router.post("/check", verify, async (req, res) => {
     );
 	
 	// =============================
-	// ✅ 查询公司位置
+	// ✅ 查询所有分行
 	// =============================
-	const companyRes = await pool.query(
-	  `SELECT c.company_name,c.lat, c.lng, c.radius
-	   FROM users u
-	   JOIN company c ON u.company_code = c.company_code
-	   WHERE u.employee_id = $1`,
-	  [employeeId]
-	);
+	const companyRes = await pool.query("SELECT * FROM company");
 
 	if (companyRes.rows.length === 0) {
-	  return res.status(400).json({ msg: "公司位置未设置" });
+	  return res.status(400).json({ msg: "未设置分行" });
 	}
 
-	const company = companyRes.rows[0];
+	let matchedCompany = null;
+	let nearest = null;
+	let minDistance = Infinity;
 
 	// =============================
-	// ✅ 计算距离
+	// ✅ 遍历所有分行
 	// =============================
-	const distance = getDistance(
-	  lat,
-	  lng,
-	  company.lat,
-	  company.lng
-	);
+	for (let c of companyRes.rows) {
+	  const dist = getDistance(lat, lng, c.lat, c.lng);
+
+	  // 最近分行
+	  if (dist < minDistance) {
+		minDistance = dist;
+		nearest = c;
+	  }
+
+	  // 在范围内
+	  if (dist <= c.radius) {
+		matchedCompany = c;
+	  }
+	}
 
 	// =============================
-	// ❌ 超出范围
+	// ❌ 不在任何分行范围
 	// =============================
-	if (distance > company.radius) {
+	if (!matchedCompany) {
 	  return res.status(403).json({
-		msg: `Far from ${company.company_name} -（${Math.round(distance)}m）`
-		
+		msg: `❌ 不在分行范围，最近：${nearest.company_name} (${Math.round(minDistance)}m)`
 	  });
 	}
 
@@ -185,7 +188,7 @@ router.post("/check", verify, async (req, res) => {
 
       return res.json({
         status: "checkin",
-        msg: "上班打卡成功"
+		msg: "上班打卡成功 @ ${matchedCompany.company_name}"
       });
     }
 
@@ -207,13 +210,14 @@ router.post("/check", verify, async (req, res) => {
 
       return res.json({
         status: "checkout",
-        msg: "下班打卡成功"
+        msg: "下班打卡成功 @ ${matchedCompany.company_name}"
       });
     }
 
     return res.json({
       status: "done",
-      msg: "今天已完成打卡"
+      msg: "今天已完成打卡",
+	   
     });
 
   } catch (err) {
