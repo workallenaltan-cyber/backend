@@ -108,10 +108,10 @@ async function login() {
         localStorage.setItem("user", JSON.stringify(data.user));
 
         // ✅ 存分行
-        localStorage.setItem("branch", data.branch);
+        localStorage.setItem("company", data.company);
 
         // ✅ 显示分行
-        alert("登录成功 @ " + data.branch);
+        alert("登录成功 @ " + data.company);
 
         // ✅ 跳转
         if (data.user.role === "admin") {
