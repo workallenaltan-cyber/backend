@@ -12,93 +12,82 @@ body {
 }
 
 /* =========================
-   📦 容器
+   📦 卡片容器（替代 container）
 ========================= */
 .container {
-  display: flex;
-  width: 900px;
-  max-width: 95%;
+  width: 100%;
+  max-width: 400px;
   background: #fff;
-  border-radius: 12px;
+  border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-/* =========================
-   左侧
-========================= */
+/* ❌ 删除左右结构 */
 .left {
-  flex: 1;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: none;
 }
 
-.left h1 {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-/* =========================
-   右侧
-========================= */
 .right {
-  flex: 1;
-  padding: 40px;
+  padding: 0;
 }
 
 /* =========================
-   输入框
+   🏢 公司标题
 ========================= */
-input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
+.company {
+  background: linear-gradient(135deg, #5a67d8, #6b73ff);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 /* =========================
-   按钮
+   👤 用户
+========================= */
+.user {
+  text-align: center;
+  padding: 15px;
+  font-weight: bold;
+}
+
+/* =========================
+   📋 信息区
+========================= */
+.info {
+  padding: 15px 25px;
+  font-size: 15px;
+}
+
+.info p {
+  margin: 10px 0;
+}
+
+/* =========================
+   🔘 按钮
 ========================= */
 button {
   width: 100%;
-  padding: 12px;
+  padding: 15px;
   border: none;
-  background: #667eea;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   font-size: 16px;
-  border-radius: 8px;
   cursor: pointer;
+  border-radius: 0 0 20px 20px;
 }
 
 button:hover {
-  background: #5a67d8;
+  opacity: 0.9;
 }
 
 /* =========================
-   页脚
-========================= */
-.footer {
-  margin-top: 15px;
-  font-size: 12px;
-  text-align: center;
-  color: #888;
-}
-
-/* =========================
-   📱 手机优化
+   📱 手机优化（已经很好）
 ========================= */
 @media (max-width: 768px) {
   .container {
-    flex-direction: column;
-  }
-
-  .left {
-    display: none;
+    max-width: 95%;
   }
 }
