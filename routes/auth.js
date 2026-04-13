@@ -176,7 +176,7 @@ router.post("/login", async (req, res) => {
     if (!matchedcompany) {
       return res.status(403).json({
         status: "fail",
-        message: `❌ 不在分行范围，最近：${nearest.name} (${Math.round(minDistance)}m)`
+        message: `❌ 不在分行范围，最近：${nearest.company_namename} (${Math.round(minDistance)}m)`
       });
     }
 
@@ -200,13 +200,13 @@ router.post("/login", async (req, res) => {
         name: user.employee_name,
         //company: user.company_name,
         role: user.role,
-        company: matchedcompany.name
+        company: matchedcompany.company_name
       },
       process.env.JWT_SECRET,
       { expiresIn: "8h" }
     );
 
-    console.log("✅ 登录成功:", user.employee_id, "@", matchedcompany.name);
+    console.log("✅ 登录成功:", user.employee_id, "@", matchedcompany.company_name);
 
     // =====================
     // ✅ 返回
@@ -215,7 +215,7 @@ router.post("/login", async (req, res) => {
       status: "success",
       message: "登录成功",
       token,
-      company: matchedcompany.name,
+      company: matchedcompany.company_name,
       distance: Math.round(minDistance),
       user: {
         employeeId: user.employee_id,
