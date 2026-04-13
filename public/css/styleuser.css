@@ -25,6 +25,32 @@ body {
 }
 
 /* =========================
+   左侧
+========================= */
+.left {
+  flex: 1;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.left h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   右侧
+========================= */
+.right {
+  flex: 1;
+  padding: 40px;
+}
+
+/* =========================
    输入框
 ========================= */
 input {
