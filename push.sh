@@ -1,9 +1,5 @@
-@echo off
-echo 🔄 Auto pushing...
+#!/bin/bash
 
 git add .
-git commit -m "auto update"
+git commit -m "update"
 git push
-
-echo ✅ Done!
-pause
