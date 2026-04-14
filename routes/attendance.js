@@ -222,7 +222,7 @@ router.post("/check", verify, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "服务器错误" });
+    res.status(500).json({ msg: "服务器错误1" });
   }
 });
 

@@ -126,7 +126,7 @@ async function login() {
 
     } catch (err) {
       console.error(err);
-      alert("服务器错误");
+      alert("服务器错误app");
     }
 
   }, () => {
